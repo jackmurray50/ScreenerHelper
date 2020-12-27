@@ -46,6 +46,7 @@ namespace ScreenerWFP
         public float temperatureOut { get; }
         public string screener_fname { get; }
         public string screener_lname { get; }
+        public string notes { get; }
         /// <summary>
         /// Base entry constructor
         /// </summary>
@@ -70,7 +71,20 @@ namespace ScreenerWFP
             float temperatureIn, float temperatureOut,
             string screener_fname, string screener_lname, string notes
             )
-        { }
+        { 
+            this.fname = fname;
+            this.lname = lname;
+            this.timeIn = timeIn;
+            this.timeOut = timeOut;
+            this.sq = sq;
+            this.resident_fname = resident_fname;
+            this.resident_lname = resident_lname;
+            this.temperatureIn = temperatureIn;
+            this.temperatureOut = temperatureOut;
+            this.screener_fname = screener_fname;
+            this.screener_lname = screener_lname;
+            this.notes = notes;
+        }
 
         /// <summary>
         /// Employee Entry constructor
@@ -133,14 +147,100 @@ namespace ScreenerWFP
             string screener_fname, string screener_lname, string notes) : this(fname, lname, timeIn, timeOut, null, "", resident_fname, resident_lname, temperatureIn, temperatureOut, screener_fname, screener_lname, notes) 
         { }
 
+        public override string ToString()
+        {
+            return $"{this.fname}, {this.lname}, {this.timeIn.ToString()}, {this.timeOut.ToString()}" +
+                $"{this.sq.ToString()}, {this.company}, {this.temperatureIn.ToString()}, {this.temperatureOut.ToString()}" +
+                $"{this.screener_fname}, {this.screener_lname}, {this.notes}";
+        }
+
         /// <summary>
         /// Class representing screening questions. Mostly used to clean up code
         /// </summary>
         public class ScreeningQuestions
         {
-            public ScreeningQuestions()
-            {
 
+            public bool Symptoms { get; }
+            public bool Travel { get; }
+            public bool Contact { get; }
+            public bool PPE { get; }
+            
+            /// <summary>
+            /// A constructor that fills in the parameters using a string. Mostly used to allow ScreeningQuestions 
+            /// to be stored in a csv cell.
+            /// </summary>
+            /// <param name="answers">A string representing the answers to the screening questions</param>
+            public ScreeningQuestions(string answers)
+            {
+                for(int i = 0; i < answers.Length; i++){
+                    if(i == 0)
+                    {
+                        if(answers[i] == 'Y' || answers[i] == 'y')
+                        {
+                            this.Symptoms = true;
+                        }
+                        if(answers[i] == 'N' || answers[i] == 'n')
+                        {
+                            this.Symptoms = false;
+                        }
+                    }
+                    if(i == 1)
+                    {
+                        if(answers[i] == 'Y' || answers[i] == 'y')
+                        {
+                            this.Travel = true;
+                        }
+                        if (answers[i] == 'N' || answers[i] == 'n')
+                        {
+                            this.Travel = false;
+                        }
+
+                    }
+                    if(i == 2)
+                    {
+                        if(answers[i] == 'Y' || answers[i] == 'y')
+                        {
+                            this.Contact = true;
+                        }
+                        if (answers[i] == 'N' || answers[i] == 'n')
+                        {
+                            this.Contact = false;
+                        }
+                    }
+                    if(i == 3)
+                    {
+                        if(answers[i] == 'Y' || answers[i] == 'y')
+                        {
+                            this.PPE = true;
+                        }
+                        if (answers[i] == 'N' || answers[i] == 'n')
+                        {
+                            this.PPE = false;
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Returns a set of characters that represent the answers to the various screening questions
+            /// </summary>
+            /// <returns>A set of characters that represents the answers to the screening questions. Ex: "YYNY"</returns>
+            public override string ToString()
+            {
+                string output = "";
+                List<bool> answers = new List<bool> {Symptoms, Travel, Contact, PPE };
+                foreach(bool answer in answers)
+                {
+                    if(answer == true)
+                    {
+                        output += 'Y';
+                    }
+                    else if(answer == false)
+                    {
+                        output += 'N';
+                    }
+                }
+                return output;
             }
 
         }

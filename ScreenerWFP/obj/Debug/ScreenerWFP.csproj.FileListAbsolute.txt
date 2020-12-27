@@ -1,0 +1,10 @@
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\ScreenerWFP.exe.config
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\ScreenerWFP.exe
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\ScreenerWFP.pdb
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csprojAssemblyReference.cache
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.Form1.resources
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.Properties.Resources.resources
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csproj.GenerateResource.cache
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csproj.CoreCompileInputs.cache
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.exe
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.pdb
