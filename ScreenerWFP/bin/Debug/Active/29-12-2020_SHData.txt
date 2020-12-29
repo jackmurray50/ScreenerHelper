@@ -1,0 +1,7 @@
+fname,lname,timeIn,timeOut,sq,company,resident_fname,resident_lname,temperatureIn,temperatureOut,screener_fname,screener_lname,notes
+Jack,Murray,12/29/2020 14:06:20,12/29/2020 14:06:20,NNNN,,,,36,35.9,Jack,Murray,
+Jack2,Murray2,12/29/2020 14:06:20,12/29/2020 14:06:20,NNNN,,,,36,35.9,Jack,Murray,
+Jack,Murray,12/29/2020 14:06:21,12/29/2020 14:06:21,NNNN,,,,36,35.9,Jack,Murray,
+Jack2,Murray2,12/29/2020 14:06:21,12/29/2020 14:06:21,NNNN,,,,36,35.9,Jack,Murray,
+Jack,Murray,12/29/2020 14:07:04,12/29/2020 14:07:04,NNNN,,,,36,35.9,Jack,Murray,
+Jack2,Murray2,12/29/2020 14:07:04,12/29/2020 14:07:04,NNNN,,,,36,35.9,Jack,Murray,

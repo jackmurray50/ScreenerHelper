@@ -1,33 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
+
 
 namespace ScreenerWFP
 {
     /// <summary>
     /// Class meant to allow retrieval of data from various CSVs. Note: Database in this case isn't a dbms, its a collection of csvs
+    /// Will support Creation, Retrieval and Update, but not Deletion. 
     /// </summary>
     public static class ScreenerData
     {
+        //These two are the paths to the relevant folders.
+        private static string activeFolderPath = "Active";
+        private static string archiveFolderPath = "Archive";
+
         ///<summary>
         ///Adds a new entry to the database.
         ///</summary>
-        ///<returns>Returns true if the operation succeeded</returns>
-        public static bool AddEntry()
+        ///<returns>The new entries id</returns>
+        public static int AddEntry(Entry entry)
         {
-            return true;
+            string curFile = "";
+            //First, figure out which file to write to.
+            //Go through all active folders and find the most recent one
+            if (!Directory.Exists(activeFolderPath)) {
+                Directory.CreateDirectory(activeFolderPath);
+            }
+
+            foreach(string file in Directory.GetFiles(activeFolderPath))
+            {
+                //Check if the files creation date is within the past day
+                if(File.GetCreationTime(file) >= DateTime.Now.AddHours(-24))
+
+                {
+                    //If true, check if its newer than curFile
+                    if (File.Exists(curFile))
+                    {
+                        if (File.GetCreationTime(file) > File.GetCreationTime(curFile))
+                        {
+                            curFile = file;
+                        }
+                    }
+                    else
+                    {
+                        curFile = file;
+                    }
+                }
+            }
+            //Now, either the newest file within 24hrs has been chosen or the curFile string is empty.
+            //If its empty, create a new file and replace curFile with it
+            if(curFile == "")
+            {
+                curFile = $"{activeFolderPath}/{DateTime.Today.Day.ToString()}-{DateTime.Today.Month.ToString()}-{DateTime.Today.Year.ToString()}" +
+                    $"_SHData.txt";
+                FileStream fs = File.Create(curFile );
+                fs.Close();
+                //Create the header
+                using (var writer = new StreamWriter(curFile))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+
+                    csv.WriteHeader<Entry>();
+                    csv.Configuration.RegisterClassMap<EntryMap>();
+                    csv.NextRecord();
+                }
+            }
+
+            //At this point its a simple matter to append the entry to the file
+            using (var stream = File.Open(curFile, FileMode.Append))
+            using (var writer = new StreamWriter(stream))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecord(entry);
+                csv.NextRecord();
+            }
+
+                //The new record will be at the bottom, so its ID will be the line number
+            int count = 0;
+            using (var reader = new StreamReader(curFile))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                csv.Configuration.HasHeaderRecord = true;
+                count = csv.GetRecords<Entry>().Count();
+            }
+            return count;
+
+            
         }
         /// <summary>
         /// Updates an entry. Requires an EntryID to know what to update.
         /// </summary>
-        /// <param name="EntryID"></param>
-        /// <returns></returns>
-        public static bool UpdateEntry(int EntryID)
-        {
-            return true;
-        }
+        /// <param name="EntryID">The Entries ID</param>
+        /// <param name="entry">The new entry</param>
+        /// <returns>The updated entry</returns>
+        //public static Entry UpdateEntry(int EntryID, Entry entry)
+        //{
+            
+        //}
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="EntryID">The Entry's ID</param>
+        ///// <returns></returns>
+        //public static Entry GetEntryByID(int EntryID)
+        //{
+        //    return 0;
+        //}
     }
     /// <summary>
     /// Class meant to hold the entry's data.
@@ -38,7 +124,9 @@ namespace ScreenerWFP
         public string lname { get; }
         public DateTime timeIn { get; }
         public DateTime timeOut { get; }
-        public ScreeningQuestions sq { get; }
+        private ScreeningQuestions _sq;
+        public string sq { get => _sq.ToString(); }
+        
         public string company { get; }
         public string resident_fname { get; }
         public string resident_lname { get; }
@@ -76,7 +164,7 @@ namespace ScreenerWFP
             this.lname = lname;
             this.timeIn = timeIn;
             this.timeOut = timeOut;
-            this.sq = sq;
+            this._sq = sq;
             this.resident_fname = resident_fname;
             this.resident_lname = resident_lname;
             this.temperatureIn = temperatureIn;
@@ -169,9 +257,12 @@ namespace ScreenerWFP
             /// A constructor that fills in the parameters using a string. Mostly used to allow ScreeningQuestions 
             /// to be stored in a csv cell.
             /// </summary>
-            /// <param name="answers">A string representing the answers to the screening questions</param>
-            public ScreeningQuestions(string answers)
+            /// <param name="sq">A string representing the answers to the screening questions</param>
+            public ScreeningQuestions(string sq)
             {
+                //A lazy hack to keep the code readable. The CsvHelper Header expects a field called 'sq' not 'answers' so to keep
+                //this method easily readable I just change the name here.
+                string answers = sq;
                 for(int i = 0; i < answers.Length; i++){
                     if(i == 0)
                     {
@@ -247,5 +338,11 @@ namespace ScreenerWFP
 
     }
 
-    
+    public class EntryMap : ClassMap<Entry>
+    {
+        public EntryMap()
+        {
+            AutoMap(CultureInfo.InvariantCulture);
+        }
+    }
 }
