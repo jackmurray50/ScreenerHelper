@@ -60,7 +60,7 @@ namespace ScreenerWFP
             if(curFile == "")
             {
                 curFile = $"{activeFolderPath}/{DateTime.Today.Day.ToString()}-{DateTime.Today.Month.ToString()}-{DateTime.Today.Year.ToString()}" +
-                    $"_SHData.txt";
+                    $"_SHData.csv";
                 FileStream fs = File.Create(curFile );
                 fs.Close();
                 //Create the header
@@ -173,7 +173,132 @@ namespace ScreenerWFP
                 return records[EntryID];
             }
         }
+    
+        public static List<Entry> SearchActiveEntries(params SearchTerm[] searchTerms)
+        {
+            return SearchEntries(false, searchTerms);
+        }
+        public static List<Entry> SearchAllEntries(params SearchTerm[] searchTerms)
+        {
+            return SearchEntries(true, searchTerms);
+        }
+        private static List<Entry> SearchEntries(bool searchArchived, SearchTerm[] searchTerms)
+        {
+            List<string> files = new List<string>();
+            Regex rgx = new Regex("^(?<date>.*)_");
+            
+            //Check the dates we're going to be looking at, to facilitate searching
+            foreach (string file in Directory.GetFiles(activeFolderPath))
+            {
+                //Get the files creation date
+                Match match = rgx.Match(file);
+                if (CheckIfDateIsInDateRange(searchTerms, match.Groups["date"].Value))
+                {
+                    files.Add(match.Groups["date"].Value + "_SHData.csv");
+                }
+                
+            }
+
+            if (searchArchived)
+            {
+                foreach(string file in Directory.GetFiles(archiveFolderPath))
+                {
+                    //Get the files creation date
+                    Match match = rgx.Match(activeFolderPath + "/" + file);
+                    if (CheckIfDateIsInDateRange(searchTerms, match.Groups["date"].Value))
+                    {
+                        files.Add(match.Groups["date"].Value + "_SHData.csv");
+                    }
+                }
+            }
+
+            //Create a list of all the records to search through
+            List<Entry> records = new List<Entry>();
+            foreach (string path in files)
+            {
+                using (var reader = new StreamReader(path))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    List<Entry> toAdd = csv.GetRecords<Entry>().ToList();
+                    records.AddRange(toAdd);
+                }
+            }
+            List<Entry> output = new List<Entry>();
+            foreach(Entry record in records)
+            {
+                foreach(SearchTerm st in searchTerms)
+                {
+                    if (st.Validate(record))
+                    {
+                        output.Add(record);
+                    }
+                }
+            }
+
+            return output;
+        }
+        /// <summary>
+        /// Check if a date falls within the dates within the SearchTerms
+        /// </summary>
+        /// <param name="st">SearchTerms</param>
+        /// <param name="date">The date to compare</param>
+        /// <returns>A bool. True if the date is within the date range</returns>
+        private static bool CheckIfDateIsInDateRange(SearchTerm[] st, string date)
+        {
+            //TODO: Implement this. For now it'll always return true
+            //DateTime dt = DateTime.Parse(date);
+
+            return true;
+
+        }
     }
+
+
+    /// <summary>
+    /// A term used for searching through entries
+    /// </summary>
+    public class SearchTerm
+    {
+        //The fields name to be searched
+        public Fields Field;
+        public string Key { get; }
+        public SearchTerm(Fields field, string key)
+        {
+            Field = field;
+            Key = key;
+        }
+        public enum Fields
+        {
+            FIRSTNAME,
+            LASTNAME,
+            RESIDENT_FIRSTNAME,
+            RESIDENT_LASTNAME,
+            COMPANY,
+            ENTER_BEFORE_DATE,
+            EXIT_BEFORE_DATE,
+            ENTER_AFTER_DATE,
+            EXIT_AFTER_DATE,
+            ENTER_ON_DATE,
+            EXIT_ON_DATE,
+            NOTE,
+            TEMP_ABOVE,
+            TEMP_BELOW,
+            SCREENINGQUESTIONS,
+            SCREENER_FIRSTNAME,
+            SCREENER_LASTNAME
+        }
+
+        /// <summary>
+        /// Check if the searchterm is True.
+        /// </summary>
+        /// <param name="entry">The entry to validate</param>
+        /// <returns>True if the entry has the searchterm</returns>
+        public bool Validate(Entry entry)
+        {
+            return true;
+        }
+    }
+
     /// <summary>
     /// Class meant to hold the entry's data.
     /// </summary>
@@ -399,7 +524,6 @@ namespace ScreenerWFP
         }
 
     }
-
     public class EntryMap : ClassMap<Entry>
     {
         public EntryMap()

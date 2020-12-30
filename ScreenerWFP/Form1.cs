@@ -20,14 +20,15 @@ namespace ScreenerWFP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //for(int i = 0; i < 10; i++)
+            //for (int i = 0; i < 10; i++)
             //{
-            Entry test = new Entry("Test", "Update1", DateTime.Now, DateTime.Now, new Entry.ScreeningQuestions("NNNN"),
-               36.0f, 35.9f, "Jack", "Murray", "");
-            //    button1.Text = ScreenerData.AddEntry(test).ToString();
-
+            //    Entry test = new Entry("Entry" + i, "Entry" + i, DateTime.Now.AddHours(i), DateTime.Now, new Entry.ScreeningQuestions("NNNN"),
+            //       36.0f, 35.9f, "Jack", "Murray", "");
+            //        button1.Text = ScreenerData.AddEntry(test).ToString();
             //}
-            ScreenerData.UpdateEntry("30-12-2020_SHData.txt;1", test);
+            //    //ScreenerData.UpdateEntry("30-12-2020_SHData.txt;1", test);
+
+            button1.Text = ScreenerData.SearchActiveEntries(new SearchTerm(SearchTerm.Fields.COMPANY, "Test"))[0].ToString();
 
             //button1.Text = ScreenerData.GetEntryByID(0, "29-12-2020_SHData.txt").ToString();
         }
