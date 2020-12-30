@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using System.Text.RegularExpressions;
 
 
 namespace ScreenerWFP
@@ -73,22 +74,24 @@ namespace ScreenerWFP
                 }
             }
 
-            //At this point its a simple matter to append the entry to the file
-            using (var stream = File.Open(curFile, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            {
-                csv.WriteRecord(entry);
-                csv.NextRecord();
-            }
-
-                //The new record will be at the bottom, so its ID will be the line number
+            //The new record will be at the bottom, so its ID will be the line number
             int count = 0;
             using (var reader = new StreamReader(curFile))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Configuration.HasHeaderRecord = true;
+                //Set the entries location
+                
                 count = csv.GetRecords<Entry>().Count();
+            }
+            //At this point its a simple matter to append the entry to the file
+            using (var stream = File.Open(curFile, FileMode.Append))
+            using (var writer = new StreamWriter(stream))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                entry.location = curFile + ";" + count.ToString();
+                csv.WriteRecord(entry);
+                csv.NextRecord();
             }
             return count;
 
@@ -97,13 +100,39 @@ namespace ScreenerWFP
         /// <summary>
         /// Updates an entry. Requires an EntryID to know what to update.
         /// </summary>
-        /// <param name="EntryID">The Entries ID</param>
-        /// <param name="entry">The new entry</param>
-        /// <returns>The updated entry</returns>
-        //public static Entry UpdateEntry(int EntryID, Entry entry)
-        //{
+        /// <param name="location">A string representing the entries location, in format "filename.extension;index"</param>
+        /// <param name="newEntry">The new entry</param>
+        public static void UpdateEntry(string location, Entry newEntry)
+        {
+            //First, parse location to find out which file and index to look at
+            Regex rgx = new Regex("(?<file>.*);(?<index>..*)");
+            Match match = rgx.Match(location);
 
-        //}
+            //Best way to update a csv is to read in the whole thing, update it in memory, then overwrite the old csv.
+            //This hurts my soul, but here we are.
+            //Note: This means 'In Active Folder', not 'inactive' as in 'not active'
+            bool inActive = true;
+            //Check if the file is in Active. If its not, then the file must be in Archive.
+            if (!File.Exists(activeFolderPath + "/" + match.Groups["file"].Value))
+            {
+                inActive = false;
+            }
+            List<Entry> records;
+            using (var reader = new StreamReader((inActive ? activeFolderPath : archiveFolderPath) + "/"+ match.Groups["file"].Value))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                records = csv.GetRecords<Entry>().ToList();
+
+            }
+            records[Int32.Parse(match.Groups["index"].Value)] = newEntry;
+
+            using(var writer = new StreamWriter((inActive ? activeFolderPath : archiveFolderPath) + "/" + match.Groups["file"].Value))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords<Entry>(records);
+            }
+
+        }
 
         /// <summary>
         /// Get an entry from a specific CSV file based on its ID, mostly a helper function for the update  
@@ -113,16 +142,17 @@ namespace ScreenerWFP
         public static Entry GetEntryByID(int EntryID, string path)
         {
             //prevent an out of bounds exception
-            if(EntryID < 0)
+            if (EntryID < 0)
             {
                 return null;
             }
             string newpath = "";
             //Check the active and archive folders, starting with the active folder since it'll be smaller.
-            if(File.Exists(activeFolderPath + "/" + path))
+            if (File.Exists(activeFolderPath + "/" + path))
             {
                 newpath = activeFolderPath + "/" + path;
-            }else if(File.Exists(archiveFolderPath + "/" + path))
+            }
+            else if (File.Exists(archiveFolderPath + "/" + path))
             {
                 newpath = archiveFolderPath + "/" + path;
             }
@@ -136,7 +166,7 @@ namespace ScreenerWFP
             {
                 List<Entry> records = csv.GetRecords<Entry>().ToList();
                 //prevent an outofbounds exception
-                if(EntryID > records.Count())
+                if (EntryID > records.Count())
                 {
                     return null;
                 }
@@ -149,6 +179,9 @@ namespace ScreenerWFP
     /// </summary>
     public class Entry
     {
+        //Location will be the file name followed by its index, to ease finding.
+        //Ex: "29-12-20_SHData.txt;1"
+        public string location { get; set; }
         public string fname { get; }
         public string lname { get; }
         public DateTime timeIn { get; }
