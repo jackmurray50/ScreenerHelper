@@ -20,12 +20,14 @@ namespace ScreenerWFP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Entry test = new Entry("Jack", "Murray", DateTime.Now, DateTime.Now, new Entry.ScreeningQuestions("NNNN"),
-                36.0f, 35.9f, "Jack", "Murray", "");
-            Entry test2 = new Entry("Jack2", "Murray2", DateTime.Now, DateTime.Now, new Entry.ScreeningQuestions("NNNN"),
-                36.0f, 35.9f, "Jack", "Murray", "");
-            button1.Text = ScreenerData.AddEntry(test).ToString();
-            button1.Text = ScreenerData.AddEntry(test2).ToString();
+            //Entry test = new Entry("Jack", "Murray", DateTime.Now, DateTime.Now, new Entry.ScreeningQuestions("NNNN"),
+            //    36.0f, 35.9f, "Jack", "Murray", "");
+            //Entry test2 = new Entry("Jack2", "Murray2", DateTime.Now, DateTime.Now, new Entry.ScreeningQuestions("NNNN"),
+            //    36.0f, 35.9f, "Jack", "Murray", "");
+            //button1.Text = ScreenerData.AddEntry(test).ToString();
+            //button1.Text = ScreenerData.AddEntry(test2).ToString();
+
+            button1.Text = ScreenerData.GetEntryByID(0, "29-12-2020_SHData.txt").ToString();
         }
     }
 }

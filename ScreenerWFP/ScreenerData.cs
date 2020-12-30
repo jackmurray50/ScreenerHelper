@@ -102,18 +102,47 @@ namespace ScreenerWFP
         /// <returns>The updated entry</returns>
         //public static Entry UpdateEntry(int EntryID, Entry entry)
         //{
-            
+
         //}
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="EntryID">The Entry's ID</param>
-        ///// <returns></returns>
-        //public static Entry GetEntryByID(int EntryID)
-        //{
-        //    return 0;
-        //}
+        /// <summary>
+        /// Get an entry from a specific CSV file based on its ID, mostly a helper function for the update  
+        /// </summary>
+        /// <param name="EntryID">The Entry's ID</param>
+        /// <returns></returns>
+        public static Entry GetEntryByID(int EntryID, string path)
+        {
+            //prevent an out of bounds exception
+            if(EntryID < 0)
+            {
+                return null;
+            }
+            string newpath = "";
+            //Check the active and archive folders, starting with the active folder since it'll be smaller.
+            if(File.Exists(activeFolderPath + "/" + path))
+            {
+                newpath = activeFolderPath + "/" + path;
+            }else if(File.Exists(archiveFolderPath + "/" + path))
+            {
+                newpath = archiveFolderPath + "/" + path;
+            }
+            else //If its not in either of the two above folders, the file doesnt exist.
+            {
+                return null;
+            }
+
+            using (var reader = new StreamReader(newpath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                List<Entry> records = csv.GetRecords<Entry>().ToList();
+                //prevent an outofbounds exception
+                if(EntryID > records.Count())
+                {
+                    return null;
+                }
+                return records[EntryID];
+            }
+        }
     }
     /// <summary>
     /// Class meant to hold the entry's data.
