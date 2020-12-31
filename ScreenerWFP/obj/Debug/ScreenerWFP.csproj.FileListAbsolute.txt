@@ -2,7 +2,6 @@ C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\ScreenerWFP.exe.co
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\ScreenerWFP.exe
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\ScreenerWFP.pdb
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csprojAssemblyReference.cache
-C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.Form1.resources
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.Properties.Resources.resources
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csproj.GenerateResource.cache
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csproj.CoreCompileInputs.cache
@@ -19,3 +18,4 @@ C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\Microsoft.Bcl.Hash
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.csproj.CopyComplete
+C:\Users\jackm\source\repos\ScreenerWFP\ScreenerWFP\obj\Debug\ScreenerWFP.MainForm.resources

@@ -185,7 +185,7 @@ namespace ScreenerWFP
         private static List<Entry> SearchEntries(bool searchArchived, SearchTerm[] searchTerms)
         {
             List<string> files = new List<string>();
-            Regex rgx = new Regex("^(?<date>.*)_");
+            Regex rgx = new Regex("\\\\(?<date>.*)_");
             
             //Check the dates we're going to be looking at, to facilitate searching
             foreach (string file in Directory.GetFiles(activeFolderPath))
@@ -194,7 +194,7 @@ namespace ScreenerWFP
                 Match match = rgx.Match(file);
                 if (CheckIfDateIsInDateRange(searchTerms, match.Groups["date"].Value))
                 {
-                    files.Add(match.Groups["date"].Value + "_SHData.csv");
+                    files.Add(activeFolderPath + "/" + match.Groups["date"].Value + "_SHData.csv");
                 }
                 
             }
@@ -204,10 +204,10 @@ namespace ScreenerWFP
                 foreach(string file in Directory.GetFiles(archiveFolderPath))
                 {
                     //Get the files creation date
-                    Match match = rgx.Match(activeFolderPath + "/" + file);
+                    Match match = rgx.Match(activeFolderPath + file);
                     if (CheckIfDateIsInDateRange(searchTerms, match.Groups["date"].Value))
                     {
-                        files.Add(match.Groups["date"].Value + "_SHData.csv");
+                        files.Add(archiveFolderPath + "/" + match.Groups["date"].Value + "_SHData.csv");
                     }
                 }
             }
@@ -224,14 +224,21 @@ namespace ScreenerWFP
                 }
             }
             List<Entry> output = new List<Entry>();
+            
             foreach(Entry record in records)
             {
+                bool valid = true;
                 foreach(SearchTerm st in searchTerms)
                 {
-                    if (st.Validate(record))
+                    if (!st.Validate(record))
                     {
-                        output.Add(record);
+                        valid = false;
+                        break;
                     }
+                }
+                if (valid == true)
+                {
+                    output.Add(record);
                 }
             }
 
@@ -246,9 +253,67 @@ namespace ScreenerWFP
         private static bool CheckIfDateIsInDateRange(SearchTerm[] st, string date)
         {
             //TODO: Implement this. For now it'll always return true
-            //DateTime dt = DateTime.Parse(date);
+            DateTime dt = DateTime.Now;
+            try
+            {
+                dt = DateTime.ParseExact(date, "dd-MM-yyyy", null);
+            }
+            catch (FormatException)
+            {
+                //This should happen if its an invalid file, so its good to
+                //not read it.
+                return false;
+            }
+            bool accepted = true;
+            foreach (var term in st)
+            {
+                DateTime parsedKey;
+                if (!DateTime.TryParseExact(term.Key, "dd-MM-yyyy", null, DateTimeStyles.None, out parsedKey))
+                {
+                    continue;
+                }
 
-            return true;
+                if (term.Field == SearchTerm.Fields.ENTER_AFTER_DATE ||
+                    term.Field == SearchTerm.Fields.EXIT_AFTER_DATE)
+                {
+                    if (parsedKey < dt)
+                    {
+                        accepted = false;
+                    }
+                } else if (term.Field == SearchTerm.Fields.ENTER_BEFORE_DATE)
+                {
+                    if (parsedKey > dt)
+                    {
+                        accepted = false;
+                    }
+                }
+                else if (term.Field == SearchTerm.Fields.EXIT_BEFORE_DATE)
+                {
+                    if (parsedKey > dt.AddDays(1))
+                    {
+                        accepted = false;
+                    }
+                }
+                else if (term.Field == SearchTerm.Fields.ENTER_ON_DATE) { 
+                    if(parsedKey != dt)
+                    {
+                        accepted = false;
+                    }
+                
+                }
+                else if(term.Field == SearchTerm.Fields.EXIT_ON_DATE)
+                {
+                    //Accept the day of
+                    if (parsedKey != dt || parsedKey != dt.AddDays(1))
+                    {
+                        //No need to do more checks if its on the date
+                        accepted = false;
+                    }
+                }
+
+            }
+
+            return accepted;
 
         }
     }
@@ -260,7 +325,7 @@ namespace ScreenerWFP
     public class SearchTerm
     {
         //The fields name to be searched
-        public Fields Field;
+        public Fields Field { get; }
         public string Key { get; }
         public SearchTerm(Fields field, string key)
         {
@@ -285,7 +350,8 @@ namespace ScreenerWFP
             TEMP_BELOW,
             SCREENINGQUESTIONS,
             SCREENER_FIRSTNAME,
-            SCREENER_LASTNAME
+            SCREENER_LASTNAME,
+            ANY
         }
 
         /// <summary>
@@ -295,7 +361,49 @@ namespace ScreenerWFP
         /// <returns>True if the entry has the searchterm</returns>
         public bool Validate(Entry entry)
         {
-            return true;
+            switch (Field) {
+                case Fields.COMPANY:
+                    return entry.company.ToLower().Contains(Key.ToLower());
+                case Fields.ENTER_AFTER_DATE:
+                    return true;
+                case Fields.ENTER_BEFORE_DATE:
+                    return true;
+                case Fields.ENTER_ON_DATE:
+                    return true;
+                case Fields.EXIT_AFTER_DATE:
+                    return true;
+                case Fields.EXIT_BEFORE_DATE:
+                    return true;
+                case Fields.EXIT_ON_DATE:
+                    return true;
+                case Fields.FIRSTNAME:
+                    return entry.fname.ToLower().Contains(Key.ToLower());
+                case Fields.LASTNAME:
+                    return entry.lname.ToLower().Contains(Key.ToLower());
+                case Fields.NOTE:
+                    return entry.notes.ToLower().Contains(Key.ToLower());
+                case Fields.RESIDENT_FIRSTNAME:
+                    return entry.resident_fname.ToLower().Contains(Key.ToLower());
+                case Fields.RESIDENT_LASTNAME:
+                    return entry.resident_lname.ToLower().Contains(Key.ToLower());
+                case Fields.SCREENER_FIRSTNAME:
+                    return entry.screener_fname.ToLower().Contains(Key.ToLower());
+                case Fields.SCREENER_LASTNAME:
+                    return entry.screener_lname.ToLower().Contains(Key.ToLower());
+                case Fields.SCREENINGQUESTIONS:
+                    return entry.sq.Contains(Key.ToUpper()); //sq is toupper instead of tolower like the others because screening questions are saved in all caps
+                case Fields.TEMP_ABOVE:
+                    return entry.temperatureIn >= float.Parse(Key) &&
+                        entry.temperatureOut >= float.Parse(Key);
+                case Fields.TEMP_BELOW:
+                    return entry.temperatureIn <= float.Parse(Key) &&
+                        entry.temperatureOut <= float.Parse(Key);
+                case Fields.ANY: //General searech in all fields
+                    //First, figure out if its fits a date, a datetime
+                    break;
+            }
+            return false;
+            
         }
     }
 
@@ -424,8 +532,8 @@ namespace ScreenerWFP
 
         public override string ToString()
         {
-            return $"{this.fname}, {this.lname}, {this.timeIn.ToString()}, {this.timeOut.ToString()}" +
-                $"{this.sq.ToString()}, {this.company}, {this.temperatureIn.ToString()}, {this.temperatureOut.ToString()}" +
+            return $"{this.fname}, {this.lname}, {this.timeIn.ToString()}, {this.timeOut.ToString()}, " +
+                $"{this.sq.ToString()}, {this.company}, {this.temperatureIn.ToString()}, {this.temperatureOut.ToString()}, " +
                 $"{this.screener_fname}, {this.screener_lname}, {this.notes}";
         }
 
