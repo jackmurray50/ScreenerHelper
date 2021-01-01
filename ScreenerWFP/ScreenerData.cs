@@ -25,6 +25,7 @@ namespace ScreenerWFP
         ///<summary>
         ///Adds a new entry to the database.
         ///</summary>
+        ///<param name="entry">The entry to be appended</param>
         ///<returns>The new entries id</returns>
         public static int AddEntry(Entry entry)
         {
@@ -458,6 +459,8 @@ namespace ScreenerWFP
             this.fname = fname;
             this.lname = lname;
             this.timeIn = timeIn;
+            //A timeout value of DateTime.MinValue represents someone who hasn't been signed out.
+            //MinValue will be ignored in all 
             this.timeOut = timeOut;
             this._sq = sq;
             this.resident_fname = resident_fname;
@@ -467,6 +470,34 @@ namespace ScreenerWFP
             this.screener_fname = screener_fname;
             this.screener_lname = screener_lname;
             this.notes = notes;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fname"></param>
+        /// <param name="lname"></param>
+        /// <param name="timeIn"></param>
+        /// <param name="timeOut"></param>
+        /// <param name="sq"></param>
+        /// <param name="company"></param>
+        /// <param name="resident_fname"></param>
+        /// <param name="resident_lname"></param>
+        /// <param name="temperatureIn"></param>
+        /// <param name="temperatureOut"></param>
+        /// <param name="screener_fname"></param>
+        /// <param name="screener_lname"></param>
+        /// <param name="notes"></param>
+        private Entry(string fname, string lname,
+            DateTime timeIn, string timeOut,
+            ScreeningQuestions sq,
+            string company,
+            string resident_fname, string resident_lname,
+            float temperatureIn, float temperatureOut,
+            string screener_fname, string screener_lname, string notes
+            ) : this(fname, lname, timeIn, DateTime.MinValue, sq, company, resident_fname, resident_lname, temperatureIn, temperatureOut,
+                screener_fname, screener_lname, notes)
+        {
+
         }
 
         /// <summary>
