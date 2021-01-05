@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 using controls = System.Windows.Controls;
 using System.Windows.Forms.Design;
 using ScreenerWFP;
@@ -53,7 +54,7 @@ namespace ScreenerWFP
             EntryTable.AutoSize = true;
 
             //Testing
-            UpdateEntryTable(ScreenerData.SearchAllEntries(), TableFormat.ALL, "lname");
+            
         }
 
         /// <summary>
@@ -69,19 +70,39 @@ namespace ScreenerWFP
             //Next, format the table with its headers and such.
             //Reset the table
             EntryTable.Controls.Clear();
-            
+
+            //Enforce auto-size on all rows
+            TableLayoutRowStyleCollection styles =
+                EntryTable.RowStyles;
+
+
             List<string> headers = new List<string>() { "First Name", "Last Name",
                 "Time Arrived", "Time Left",
-                "Temp In", "Temp Out", "Screener", "Screening Questions", "Notes"};
+                "Temp In", "Temp Out", "Screener", "Screening Questions", "Notes", "", ""};
+            EntryTable.ColumnCount = 11;
             if(format == TableFormat.ALL)
             {
                 //13 columns.
-                EntryTable.ColumnCount = 12;
+                EntryTable.ColumnCount = 14;
                 //Set the headers
                 headers.Insert(6, "Resident First Name");
                 headers.Insert(7, "Resident Last Name");
-                headers.Add("Company");
+                headers.Insert(headers.Count -2, "Company");
 
+
+            } else if(format == TableFormat.EMPLOYEE)
+            {
+
+            }
+            else if(format == TableFormat.CAREGIVER)
+            {
+
+            }else if(format == TableFormat.VISITOR)
+            {
+
+            }
+            else if(format == TableFormat.ESP)
+            {
 
             }
             foreach(var header in headers)
@@ -96,6 +117,7 @@ namespace ScreenerWFP
                 {
                     TextBox newtb = new TextBox();
                     newtb.Text = entry.fname;
+                    newtb.Dock = DockStyle.Fill;
                     EntryTable.Controls.Add(newtb);
                 }
                 if(headers.Contains("Last Name"))
@@ -107,13 +129,11 @@ namespace ScreenerWFP
                 if (headers.Contains("Time Arrived"))
                 {
                     TextBox newtb = new TextBox();
-                    newtb.Text = entry.timeIn.ToString();
+                    newtb.Text = entry.timeIn.ToShortTimeString();
                     EntryTable.Controls.Add(newtb);
                 }
                 if (headers.Contains("Time Left"))
                 {
-                    FlowLayoutPanel panel = new FlowLayoutPanel();
-                    panel.FlowDirection = FlowDirection.TopDown;
                     TextBox newtb = new TextBox();
                     if(entry.timeOut == DateTime.MinValue)
                     {
@@ -121,13 +141,9 @@ namespace ScreenerWFP
                     }
                     else
                     {
-                        newtb.Text = entry.timeOut.ToString();
+                        newtb.Text = entry.timeOut.ToShortTimeString();
                     }
-                    panel.Controls.Add(newtb);
-                    Button newbtn = new Button();
-                    newbtn.Text = "Data = Now";
-                    panel.Controls.Add(newbtn);
-                    EntryTable.Controls.Add(panel);
+                    EntryTable.Controls.Add(newtb);
                 }
                 if (headers.Contains("Temp In"))
                 {
@@ -176,10 +192,34 @@ namespace ScreenerWFP
                     newtb.Text = entry.notes;
                     EntryTable.Controls.Add(newtb);
                 }
+                Button editBtn = new Button();
+                editBtn.Text = "Edit";
+                EntryTable.Controls.Add(editBtn);
+
+                Button leaveBtn = new Button();
+                leaveBtn.Text = "Leave";
+                EntryTable.Controls.Add(leaveBtn);
+                //Each LeaveBtn will have access to this method, which will fill in the exit time
+                //and ask for a confirmation that the visit has ended
+                leaveBtn.Click += (sender, e) => LeaveBtn_Click(sender, e, EntryTable.GetRow(leaveBtn));
 
             }
-            
 
+            foreach(Control cell in EntryTable.Controls)
+            {
+                cell.Dock = DockStyle.Fill;
+                cell.Margin = new Padding(0);
+                if(EntryTable.GetPositionFromControl(cell).Row % 2 == 0)
+                {
+                    cell.BackColor = Color.LightGray;
+                }
+            }
+            foreach (RowStyle row in styles)
+            {
+                row.SizeType = SizeType.AutoSize;
+            }
+
+            EntryTable.Refresh();   
         }
         private IEnumerable<Entry> SortList(List<Entry> entries, string sortby)
         {
@@ -196,6 +236,50 @@ namespace ScreenerWFP
         private void label8_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void AddEntryBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LeaveBtn_Click(object sender, EventArgs e, int row)
+        {
+
+        }
+
+
+        private void EntryTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            
+            if ((e.Row) % 2 == 0)
+                e.Graphics.FillRectangle(Brushes.LightGray, e.CellBounds);
+        }
+
+        private void SearchBtn_Click(object sender, EventArgs e)
+        {
+            TableFormat tf = TableFormat.ALL;
+            if(EntryTypeComboBox.SelectedIndex == 0)
+            {
+                tf = TableFormat.ALL;
+            }else if(EntryTypeComboBox.SelectedIndex == 1)
+            {
+                tf = TableFormat.EMPLOYEE;
+            }else if(EntryTypeComboBox.SelectedIndex == 2)
+            {
+                tf = TableFormat.ESP;
+            }else if(EntryTypeComboBox.SelectedIndex == 3)
+            {
+                tf = TableFormat.CAREGIVER;
+            }else if(EntryTypeComboBox.SelectedIndex == 4)
+            {
+                tf = TableFormat.VISITOR;
+            }
+
+            SearchTerm[] st = { };
+           
+            UpdateEntryTable(ScreenerData.SearchAllEntries(
+                st), tf, "lname");
         }
     }
 }

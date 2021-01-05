@@ -31,7 +31,7 @@ namespace ScreenerWFP
         {
             this.EntryTypeComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.SearchBtn = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -59,24 +59,13 @@ namespace ScreenerWFP
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.label11 = new System.Windows.Forms.Label();
             this.EntryTable = new System.Windows.Forms.TableLayoutPanel();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.EntryTable.SuspendLayout();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.AddEntryBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // EntryTypeComboBox
@@ -106,15 +95,16 @@ namespace ScreenerWFP
             this.label1.TabIndex = 2;
             this.label1.Text = "Show:";
             // 
-            // button1
+            // SearchBtn
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(218, 43);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(148, 34);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Display";
-            this.button1.UseVisualStyleBackColor = true;
+            this.SearchBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SearchBtn.Location = new System.Drawing.Point(218, 43);
+            this.SearchBtn.Name = "SearchBtn";
+            this.SearchBtn.Size = new System.Drawing.Size(148, 34);
+            this.SearchBtn.TabIndex = 3;
+            this.SearchBtn.Text = "Display";
+            this.SearchBtn.UseVisualStyleBackColor = true;
+            this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
             // 
             // button2
             // 
@@ -379,144 +369,15 @@ namespace ScreenerWFP
             this.EntryTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.692307F));
             this.EntryTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.692307F));
             this.EntryTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.692307F));
-            this.EntryTable.Controls.Add(this.label12, 0, 0);
-            this.EntryTable.Controls.Add(this.label14, 1, 0);
-            this.EntryTable.Controls.Add(this.label13, 2, 0);
-            this.EntryTable.Controls.Add(this.label15, 12, 0);
-            this.EntryTable.Controls.Add(this.label16, 3, 0);
-            this.EntryTable.Controls.Add(this.label17, 4, 0);
-            this.EntryTable.Controls.Add(this.label18, 5, 0);
-            this.EntryTable.Controls.Add(this.label19, 6, 0);
-            this.EntryTable.Controls.Add(this.label20, 7, 0);
-            this.EntryTable.Controls.Add(this.label21, 8, 0);
-            this.EntryTable.Controls.Add(this.label22, 9, 0);
-            this.EntryTable.Controls.Add(this.label23, 10, 0);
-            this.EntryTable.Controls.Add(this.label24, 11, 0);
             this.EntryTable.Dock = System.Windows.Forms.DockStyle.Top;
             this.EntryTable.Location = new System.Drawing.Point(0, 0);
             this.EntryTable.Name = "EntryTable";
             this.EntryTable.RowCount = 1;
             this.EntryTable.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.EntryTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.EntryTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 475F));
             this.EntryTable.Size = new System.Drawing.Size(1744, 476);
             this.EntryTable.TabIndex = 31;
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(1478, 1);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(108, 34);
-            this.label24.TabIndex = 13;
-            this.label24.Text = "Screeners Last Name";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(1344, 1);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(108, 34);
-            this.label23.TabIndex = 12;
-            this.label23.Text = "Screeners First Name";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(1210, 1);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(71, 17);
-            this.label22.TabIndex = 11;
-            this.label22.Text = "Temp Out";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(1076, 1);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(59, 17);
-            this.label21.TabIndex = 10;
-            this.label21.Text = "Temp In";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(942, 1);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(106, 34);
-            this.label20.TabIndex = 9;
-            this.label20.Text = "Residents Last Name";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(808, 1);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(106, 34);
-            this.label19.TabIndex = 8;
-            this.label19.Text = "Residents First Name";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(674, 1);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(67, 17);
-            this.label18.TabIndex = 7;
-            this.label18.Text = "Company";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(540, 1);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(76, 34);
-            this.label17.TabIndex = 6;
-            this.label17.Text = "Screening Questions";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(406, 1);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(66, 17);
-            this.label16.TabIndex = 5;
-            this.label16.Text = "Time Out";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(1612, 1);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(45, 17);
-            this.label15.TabIndex = 4;
-            this.label15.Text = "Notes";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(272, 1);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(54, 17);
-            this.label13.TabIndex = 3;
-            this.label13.Text = "Time In";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(138, 1);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(76, 17);
-            this.label14.TabIndex = 2;
-            this.label14.Text = "Last Name";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(4, 1);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(76, 17);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "First Name";
+            this.EntryTable.CellPaint += new System.Windows.Forms.TableLayoutCellPaintEventHandler(this.EntryTable_CellPaint);
             // 
             // panel1
             // 
@@ -542,7 +403,7 @@ namespace ScreenerWFP
             this.panel2.Controls.Add(this.label11);
             this.panel2.Controls.Add(this.EntryTypeComboBox);
             this.panel2.Controls.Add(this.radioButton6);
-            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.SearchBtn);
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.dateTimePicker1);
@@ -569,21 +430,42 @@ namespace ScreenerWFP
             this.panel2.Size = new System.Drawing.Size(1765, 103);
             this.panel2.TabIndex = 32;
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.AddEntryBtn);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(0, 434);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(1765, 42);
+            this.panel3.TabIndex = 33;
+            // 
+            // AddEntryBtn
+            // 
+            this.AddEntryBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AddEntryBtn.Location = new System.Drawing.Point(0, 0);
+            this.AddEntryBtn.Margin = new System.Windows.Forms.Padding(1);
+            this.AddEntryBtn.Name = "AddEntryBtn";
+            this.AddEntryBtn.Size = new System.Drawing.Size(1765, 42);
+            this.AddEntryBtn.TabIndex = 0;
+            this.AddEntryBtn.Text = "NEW VISITOR";
+            this.AddEntryBtn.UseVisualStyleBackColor = true;
+            this.AddEntryBtn.Click += new System.EventHandler(this.AddEntryBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1765, 476);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Name = "MainForm";
             this.Text = "Screener Helper";
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.EntryTable.ResumeLayout(false);
-            this.EntryTable.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -592,7 +474,7 @@ namespace ScreenerWFP
         #endregion
         private System.Windows.Forms.ComboBox EntryTypeComboBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button SearchBtn;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -620,21 +502,10 @@ namespace ScreenerWFP
         private System.Windows.Forms.RadioButton radioButton6;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TableLayoutPanel EntryTable;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button AddEntryBtn;
     }
 }
 
