@@ -57,6 +57,8 @@ namespace ScreenerWFP
             
         }
 
+        private List<string> LeaveBtn_IDs = new List<string>();
+
         /// <summary>
         /// Update the EntryTable object with the passed entries.
         /// </summary>
@@ -87,22 +89,31 @@ namespace ScreenerWFP
                 //Set the headers
                 headers.Insert(6, "Resident First Name");
                 headers.Insert(7, "Resident Last Name");
-                headers.Insert(headers.Count -2, "Company");
+                headers.Insert(8, "Company");
 
 
             } else if(format == TableFormat.EMPLOYEE)
             {
-
+                //No further columns to add
             }
             else if(format == TableFormat.CAREGIVER)
             {
-
-            }else if(format == TableFormat.VISITOR)
+                EntryTable.ColumnCount = 13;
+                headers.Insert(6, "Resident First Name");
+                headers.Insert(7, "Resident Last Name");
+            }
+            else if(format == TableFormat.VISITOR)
             {
+                EntryTable.ColumnCount = 12;
 
+                headers.Insert(6, "Resident First Name");
+                headers.Insert(7, "Resident Last Name");
+                headers.RemoveAt(9);
             }
             else if(format == TableFormat.ESP)
             {
+                EntryTable.ColumnCount = 12;
+                headers.Insert(6, "Company");
 
             }
             foreach(var header in headers)
@@ -110,6 +121,7 @@ namespace ScreenerWFP
                 System.Windows.Forms.Label newLabel = new Label();
                 newLabel.Text = header;
                 EntryTable.Controls.Add(newLabel);
+                //Need to make them sortable
             }
             foreach(var entry in entries)
             {
@@ -168,6 +180,12 @@ namespace ScreenerWFP
                     newtb.Text = entry.resident_lname;
                     EntryTable.Controls.Add(newtb);
                 }
+                if (headers.Contains("Company"))
+                {
+                    TextBox newtb = new TextBox();
+                    newtb.Text = entry.company;
+                    EntryTable.Controls.Add(newtb);
+                }
                 if (headers.Contains("Screener"))
                 {
                     TextBox newtb = new TextBox();
@@ -180,12 +198,6 @@ namespace ScreenerWFP
                     newtb.Text = entry.sq;
                     EntryTable.Controls.Add(newtb);
                 }
-                if (headers.Contains("Company"))
-                {
-                    TextBox newtb = new TextBox();
-                    newtb.Text = entry.company;
-                    EntryTable.Controls.Add(newtb);
-                }
                 if (headers.Contains("Notes"))
                 {
                     TextBox newtb = new TextBox();
@@ -196,12 +208,16 @@ namespace ScreenerWFP
                 editBtn.Text = "Edit";
                 EntryTable.Controls.Add(editBtn);
 
+
+                LeaveBtn_IDs.Add(entry.location);
                 Button leaveBtn = new Button();
                 leaveBtn.Text = "Leave";
                 EntryTable.Controls.Add(leaveBtn);
                 //Each LeaveBtn will have access to this method, which will fill in the exit time
                 //and ask for a confirmation that the visit has ended
-                leaveBtn.Click += (sender, e) => LeaveBtn_Click(sender, e, EntryTable.GetRow(leaveBtn));
+                leaveBtn.Click += (sender, e) => LeaveBtn_Click(sender, e, 
+                    EntryTable.GetRow(leaveBtn),
+                    LeaveBtn_IDs[EntryTable.GetRow(leaveBtn)]);
 
             }
 
@@ -209,6 +225,7 @@ namespace ScreenerWFP
             {
                 cell.Dock = DockStyle.Fill;
                 cell.Margin = new Padding(0);
+                cell.Font = new Font("Arial", 12);
                 if(EntryTable.GetPositionFromControl(cell).Row % 2 == 0)
                 {
                     cell.BackColor = Color.LightGray;
@@ -233,19 +250,22 @@ namespace ScreenerWFP
             return entries;
         }
 
-        private void label8_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void AddEntryBtn_Click(object sender, EventArgs e)
         {
+            
+        }
+
+        private void LeaveBtn_Click(object sender, EventArgs e, int row, string entryID)
+        {
+            ScreenerData.UpdateEntry(entryID,
+                EntryFromRow(row));
+
 
         }
 
-        private void LeaveBtn_Click(object sender, EventArgs e, int row)
+        private Entry EntryFromRow(int row)
         {
-
+            return null;
         }
 
 
@@ -258,6 +278,7 @@ namespace ScreenerWFP
 
         private void SearchBtn_Click(object sender, EventArgs e)
         {
+            List<SearchTerm> st = new List<SearchTerm>();
             TableFormat tf = TableFormat.ALL;
             if(EntryTypeComboBox.SelectedIndex == 0)
             {
@@ -276,7 +297,12 @@ namespace ScreenerWFP
                 tf = TableFormat.VISITOR;
             }
 
-            SearchTerm[] st = { };
+            if (ShowCurrentVisitorsChk.Checked)
+            {
+                st.Add(new SearchTerm(SearchTerm.Fields.ISACTIVE, ""));
+            }
+
+            
            
             UpdateEntryTable(ScreenerData.SearchAllEntries(
                 st), tf, "lname");

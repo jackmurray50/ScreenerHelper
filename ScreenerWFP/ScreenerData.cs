@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Text.RegularExpressions;
-
+//Made by Jack Murray
 
 namespace ScreenerWFP
 {
@@ -175,15 +175,15 @@ namespace ScreenerWFP
             }
         }
     
-        public static List<Entry> SearchActiveEntries(params SearchTerm[] searchTerms)
+        public static List<Entry> SearchActiveEntries( List<SearchTerm> searchTerms)
         {
             return SearchEntries(false, searchTerms);
         }
-        public static List<Entry> SearchAllEntries(params SearchTerm[] searchTerms)
+        public static List<Entry> SearchAllEntries(List<SearchTerm> searchTerms)
         {
             return SearchEntries(true, searchTerms);
         }
-        private static List<Entry> SearchEntries(bool searchArchived, SearchTerm[] searchTerms)
+        private static List<Entry> SearchEntries(bool searchArchived, List<SearchTerm> searchTerms)
         {
             List<string> files = new List<string>();
             Regex rgx = new Regex("\\\\(?<date>.*)_");
@@ -251,7 +251,7 @@ namespace ScreenerWFP
         /// <param name="st">SearchTerms</param>
         /// <param name="date">The date to compare</param>
         /// <returns>A bool. True if the date is within the date range</returns>
-        private static bool CheckIfDateIsInDateRange(SearchTerm[] st, string date)
+        private static bool CheckIfDateIsInDateRange(List<SearchTerm> st, string date)
         {
             //TODO: Implement this. For now it'll always return true
             DateTime dt = DateTime.Now;
@@ -335,6 +335,7 @@ namespace ScreenerWFP
         }
         public enum Fields
         {
+            ISACTIVE,
             FIRSTNAME,
             LASTNAME,
             RESIDENT_FIRSTNAME,
@@ -402,6 +403,8 @@ namespace ScreenerWFP
                 case Fields.ANY: //General searech in all fields
                     //First, figure out if its fits a date, a datetime
                     break;
+                case Fields.ISACTIVE:
+                    return entry.timeOut == DateTime.MinValue;
             }
             return false;
             
@@ -463,6 +466,7 @@ namespace ScreenerWFP
             //MinValue will be ignored in all 
             this.timeOut = timeOut;
             this._sq = sq;
+            this.company = company;
             this.resident_fname = resident_fname;
             this.resident_lname = resident_lname;
             this.temperatureIn = temperatureIn;
