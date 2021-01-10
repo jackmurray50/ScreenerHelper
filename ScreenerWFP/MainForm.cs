@@ -252,21 +252,125 @@ namespace ScreenerWFP
 
         private void AddEntryBtn_Click(object sender, EventArgs e)
         {
+            //hide the entry buttons 
+            AddEmployeeBtn.Hide();
+            AddESPBtn.Hide();
+            AddEssentialCaregiverBtn.Hide();
+            AddEssentialVisitorBtn.Hide();
+            //Add the basic items
+            Label FNameLabel = new Label();
+            FNameLabel.Text = "First Name: ";
+            TextBox FNameTxt = new TextBox();
+
+            Label LNameLabel = new Label();
+            LNameLabel.Text = "Last Name: ";
+            TextBox LNameTxt = new TextBox();
+
+            Label TimeInLabel = new Label();
+            TimeInLabel.Text = "Time Arrived: ";
+            TextBox TimeInTxt = new TextBox();
+            TimeInTxt.Text = DateTime.Now.ToShortTimeString();
+
+            Label TempInLabel = new Label();
+            TempInLabel.Text = "Temperature: ";
+            TextBox TempInTxt = new TextBox();
+
+            AddEntryPanel.Controls.AddRange(new Control[] {
+                FNameLabel, FNameTxt,
+                LNameLabel, LNameTxt,
+                TimeInLabel, TimeInTxt,
+                TempInLabel, TempInTxt
+            });
+            //Depending on which EntryBtn was clicked (Figure it out with Sender)
+            //Add different items to the panel
+            if (((Button)sender).Text == "NEW EMPLOYEE") {
+                
+            }else if (((Button)sender).Text == "NEW ESSENTIAL SERVICE PROVIDER")
+            {
+                Label CompanyLbl = new Label();
+                CompanyLbl.Text = "Company: ";
+                TextBox CompanyTxt = new TextBox();
+                AddEntryPanel.Controls.AddRange(new Control[] { CompanyLbl, CompanyTxt });
+            }
+            else if (((Button)sender).Text == "NEW ESSENTIAL CAREGIVER" ||
+                ((Button)sender).Text == "NEW ESSENTIAL VISITOR")
+            {
+                Label ResidentFNameLbl = new Label();
+                ResidentFNameLbl.Text = "Residents First Name";
+                TextBox ResidentFNameTxt = new TextBox();
+                
+                Label ResidentLNameLbl = new Label();
+                ResidentLNameLbl.Text = "Residents Last Name";
+                TextBox ResidentLnameTxt = new TextBox();
+                AddEntryPanel.Controls.AddRange(new Control[] {
+                ResidentFNameLbl, ResidentFNameTxt,
+                ResidentLNameLbl, ResidentLnameTxt
+                });
+            }
+            else
+            {
+                throw new Exception("Unknown Entry Button");
+            }
+
+            if(((Button)sender).Text != "NEW ESSENTIAL VISITOR")
+            {
+                Button SymptomBtn = new Button();
+                SymptomBtn.Text = "Has Symptoms";
+                Button TravelBtn = new Button();
+                TravelBtn.Text = "Has traveled within 2 wks";
+                Button ContactBtn = new Button();
+                ContactBtn.Text = "Has had contact covid in 2 wks";
+                Button PPEBtn = new Button();
+                PPEBtn.Text = "Didnt Wear appropriate PPE";
+                AddEntryPanel.Controls.AddRange(new Control[] {
+                SymptomBtn, TravelBtn, ContactBtn, PPEBtn
+                });
+            }
+            //and fill the panel with the information for a new
+            //entry, and a Confirm button. 
+
+
+            Button ConfirmBtn = new Button();
+            ConfirmBtn.Text = "Confirm";
+            AddEntryPanel.Controls.AddRange(new Control[] {
+                ConfirmBtn 
+            });
             
+            
+            //Once the confirm button is clicked, add the
+            //information to a new Entry object, and add it to the database.
+            //Then, update the table and revert the panel back to the various add entry buttons
         }
 
         private void LeaveBtn_Click(object sender, EventArgs e, int row, string entryID)
         {
-            ScreenerData.UpdateEntry(entryID,
-                EntryFromRow(row));
+
+            //TODO:
+            //Set the leaving time to now  
+            
+            //screenerdata.updateentry(entryid,
+            //    entryfromrow(row));
 
 
         }
 
-        private Entry EntryFromRow(int row)
-        {
-            return null;
-        }
+        //private entry entryfromrow(int row)
+        //{
+        //    //create a 'mock-up' entry with default values
+        //    string fname = "";
+        //    string lname = "";
+        //    datetime timein = datetime.now;
+        //    datetime timout = datetime.minvalue;
+        //    string sq = "nnnn";
+        //    string company = "";
+        //    string resident_fname = "";
+        //    string resident_lanem = "";
+        //    float tempin = 0.0f;
+        //    float tempout = 0.0f;
+        //    string screener_fname = "";
+        //    string screener_lname = "";
+        //    string notes = "";
+        //}
 
 
         private void EntryTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)

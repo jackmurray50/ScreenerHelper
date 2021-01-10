@@ -42,14 +42,14 @@ namespace ScreenerWFP
             this.BtnSearch = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.ShowCurrentVisitorsChk = new System.Windows.Forms.CheckBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.AddEntryBtn = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.AddESPBtn = new System.Windows.Forms.Button();
+            this.AddEssentialCaregiverBtn = new System.Windows.Forms.Button();
+            this.AddEmployeeBtn = new System.Windows.Forms.Button();
+            this.AddEssentialVisitorBtn = new System.Windows.Forms.Button();
+            this.AddEntryPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
+            this.AddEntryPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // EntryTypeComboBox
@@ -123,7 +123,7 @@ namespace ScreenerWFP
             this.EntryTable.RowCount = 1;
             this.EntryTable.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.EntryTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 475F));
-            this.EntryTable.Size = new System.Drawing.Size(1744, 476);
+            this.EntryTable.Size = new System.Drawing.Size(1902, 476);
             this.EntryTable.TabIndex = 31;
             this.EntryTable.CellPaint += new System.Windows.Forms.TableLayoutCellPaintEventHandler(this.EntryTable_CellPaint);
             // 
@@ -132,11 +132,12 @@ namespace ScreenerWFP
             this.panel1.AutoScroll = true;
             this.panel1.AutoSize = true;
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel1.Controls.Add(this.AddEntryPanel);
             this.panel1.Controls.Add(this.EntryTable);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 80);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1765, 396);
+            this.panel1.Size = new System.Drawing.Size(1902, 953);
             this.panel1.TabIndex = 31;
             // 
             // panel2
@@ -156,7 +157,7 @@ namespace ScreenerWFP
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1765, 80);
+            this.panel2.Size = new System.Drawing.Size(1902, 80);
             this.panel2.TabIndex = 32;
             // 
             // label3
@@ -223,69 +224,75 @@ namespace ScreenerWFP
             this.ShowCurrentVisitorsChk.Text = "Show only currently visiting";
             this.ShowCurrentVisitorsChk.UseVisualStyleBackColor = true;
             // 
-            // panel3
+            // AddESPBtn
             // 
-            this.panel3.Controls.Add(this.button4);
-            this.panel3.Controls.Add(this.button3);
-            this.panel3.Controls.Add(this.button2);
-            this.panel3.Controls.Add(this.AddEntryBtn);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 434);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1765, 42);
-            this.panel3.TabIndex = 33;
+            this.AddESPBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddESPBtn.AutoSize = true;
+            this.AddESPBtn.Location = new System.Drawing.Point(1407, 1);
+            this.AddESPBtn.Margin = new System.Windows.Forms.Padding(1);
+            this.AddESPBtn.Name = "AddESPBtn";
+            this.AddESPBtn.Size = new System.Drawing.Size(488, 50);
+            this.AddESPBtn.TabIndex = 3;
+            this.AddESPBtn.Text = "NEW ESSENTIAL SERVICE PROVIDER";
+            this.AddESPBtn.UseVisualStyleBackColor = true;
+            this.AddESPBtn.Click += new System.EventHandler(this.AddEntryBtn_Click);
             // 
-            // AddEntryBtn
+            // AddEssentialCaregiverBtn
             // 
-            this.AddEntryBtn.Dock = System.Windows.Forms.DockStyle.Left;
-            this.AddEntryBtn.Location = new System.Drawing.Point(0, 0);
-            this.AddEntryBtn.Margin = new System.Windows.Forms.Padding(1);
-            this.AddEntryBtn.Name = "AddEntryBtn";
-            this.AddEntryBtn.Size = new System.Drawing.Size(426, 42);
-            this.AddEntryBtn.TabIndex = 0;
-            this.AddEntryBtn.Text = "NEW ESSENTIAL VISITOR";
-            this.AddEntryBtn.UseVisualStyleBackColor = true;
-            this.AddEntryBtn.Click += new System.EventHandler(this.AddEntryBtn_Click);
+            this.AddEssentialCaregiverBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddEssentialCaregiverBtn.AutoSize = true;
+            this.AddEssentialCaregiverBtn.Location = new System.Drawing.Point(491, 1);
+            this.AddEssentialCaregiverBtn.Margin = new System.Windows.Forms.Padding(1);
+            this.AddEssentialCaregiverBtn.Name = "AddEssentialCaregiverBtn";
+            this.AddEssentialCaregiverBtn.Size = new System.Drawing.Size(476, 50);
+            this.AddEssentialCaregiverBtn.TabIndex = 2;
+            this.AddEssentialCaregiverBtn.Text = "NEW ESSENTIAL CAREGIVER";
+            this.AddEssentialCaregiverBtn.UseVisualStyleBackColor = true;
+            this.AddEssentialCaregiverBtn.Click += new System.EventHandler(this.AddEntryBtn_Click);
             // 
-            // button2
+            // AddEmployeeBtn
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.button2.Location = new System.Drawing.Point(426, 0);
-            this.button2.Margin = new System.Windows.Forms.Padding(1);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(414, 42);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "NEW EMPLOYEE";
-            this.button2.UseVisualStyleBackColor = true;
+            this.AddEmployeeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddEmployeeBtn.AutoSize = true;
+            this.AddEmployeeBtn.Location = new System.Drawing.Point(969, 1);
+            this.AddEmployeeBtn.Margin = new System.Windows.Forms.Padding(1);
+            this.AddEmployeeBtn.Name = "AddEmployeeBtn";
+            this.AddEmployeeBtn.Size = new System.Drawing.Size(436, 50);
+            this.AddEmployeeBtn.TabIndex = 1;
+            this.AddEmployeeBtn.Text = "NEW EMPLOYEE";
+            this.AddEmployeeBtn.UseVisualStyleBackColor = true;
+            this.AddEmployeeBtn.Click += new System.EventHandler(this.AddEntryBtn_Click);
             // 
-            // button3
+            // AddEssentialVisitorBtn
             // 
-            this.button3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button3.Location = new System.Drawing.Point(1310, 0);
-            this.button3.Margin = new System.Windows.Forms.Padding(1);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(455, 42);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "NEW ESSENTIAL CAREGIVER";
-            this.button3.UseVisualStyleBackColor = true;
+            this.AddEssentialVisitorBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddEssentialVisitorBtn.AutoSize = true;
+            this.AddEssentialVisitorBtn.Location = new System.Drawing.Point(1, 1);
+            this.AddEssentialVisitorBtn.Margin = new System.Windows.Forms.Padding(1);
+            this.AddEssentialVisitorBtn.Name = "AddEssentialVisitorBtn";
+            this.AddEssentialVisitorBtn.Size = new System.Drawing.Size(488, 50);
+            this.AddEssentialVisitorBtn.TabIndex = 0;
+            this.AddEssentialVisitorBtn.Text = "NEW ESSENTIAL VISITOR";
+            this.AddEssentialVisitorBtn.UseVisualStyleBackColor = true;
+            this.AddEssentialVisitorBtn.Click += new System.EventHandler(this.AddEntryBtn_Click);
             // 
-            // button4
+            // AddEntryPanel
             // 
-            this.button4.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button4.Location = new System.Drawing.Point(842, 0);
-            this.button4.Margin = new System.Windows.Forms.Padding(1);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(468, 42);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "NEW ESSENTIAL SERVICE PROVIDER";
-            this.button4.UseVisualStyleBackColor = true;
+            this.AddEntryPanel.Controls.Add(this.AddEssentialVisitorBtn);
+            this.AddEntryPanel.Controls.Add(this.AddEssentialCaregiverBtn);
+            this.AddEntryPanel.Controls.Add(this.AddEmployeeBtn);
+            this.AddEntryPanel.Controls.Add(this.AddESPBtn);
+            this.AddEntryPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.AddEntryPanel.Location = new System.Drawing.Point(0, 899);
+            this.AddEntryPanel.Name = "AddEntryPanel";
+            this.AddEntryPanel.Size = new System.Drawing.Size(1902, 54);
+            this.AddEntryPanel.TabIndex = 32;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1765, 476);
-            this.Controls.Add(this.panel3);
+            this.ClientSize = new System.Drawing.Size(1902, 1033);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Name = "MainForm";
@@ -294,7 +301,8 @@ namespace ScreenerWFP
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
+            this.AddEntryPanel.ResumeLayout(false);
+            this.AddEntryPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -308,17 +316,17 @@ namespace ScreenerWFP
         private System.Windows.Forms.TableLayoutPanel EntryTable;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Button AddEntryBtn;
+        private System.Windows.Forms.Button AddEssentialVisitorBtn;
         private System.Windows.Forms.Button BtnSearch;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox ShowCurrentVisitorsChk;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button AddEmployeeBtn;
+        private System.Windows.Forms.Button AddESPBtn;
+        private System.Windows.Forms.Button AddEssentialCaregiverBtn;
+        private System.Windows.Forms.FlowLayoutPanel AddEntryPanel;
     }
 }
 

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Text.RegularExpressions;
-//Made by Jack Murray
 
 namespace ScreenerWFP
 {
