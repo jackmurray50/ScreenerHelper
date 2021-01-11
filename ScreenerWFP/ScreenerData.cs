@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Text.RegularExpressions;
+using CsvHelper.TypeConversion;
 
 namespace ScreenerWFP
 {
@@ -26,7 +27,7 @@ namespace ScreenerWFP
         ///</summary>
         ///<param name="entry">The entry to be appended</param>
         ///<returns>The new entries id</returns>
-        public static int AddEntry(Entry entry)
+        public static string AddEntry(Entry entry)
         {
             string curFile = "";
             //First, figure out which file to write to.
@@ -38,7 +39,7 @@ namespace ScreenerWFP
             foreach(string file in Directory.GetFiles(activeFolderPath))
             {
                 //Check if the files creation date is within the past day
-                if(File.GetCreationTime(file) >= DateTime.Now.AddHours(-24))
+                if(File.GetCreationTime(file).Day == DateTime.Now.Day)
 
                 {
                     //If true, check if its newer than curFile
@@ -59,7 +60,7 @@ namespace ScreenerWFP
             //If its empty, create a new file and replace curFile with it
             if(curFile == "")
             {
-                curFile = $"{activeFolderPath}/{DateTime.Today.Day.ToString()}-{DateTime.Today.Month.ToString()}-{DateTime.Today.Year.ToString()}" +
+                curFile = $"{activeFolderPath}/{DateTime.Today.ToString("dd-MM-yyyy")}" +
                     $"_SHData.csv";
                 FileStream fs = File.Create(curFile );
                 fs.Close();
@@ -93,7 +94,7 @@ namespace ScreenerWFP
                 csv.WriteRecord(entry);
                 csv.NextRecord();
             }
-            return count;
+            return entry.location;
 
             
         }
@@ -423,8 +424,18 @@ namespace ScreenerWFP
         public DateTime timeIn { get; }
         public DateTime timeOut { get; }
         private ScreeningQuestions _sq;
-        public string sq { get => _sq.ToString(); }
-        
+        public string sq
+        {
+            get
+            {
+                if(_sq is null)
+                {
+                    return "";
+                }
+                return _sq.ToString();
+            }
+        }
+
         public string company { get; }
         public string resident_fname { get; }
         public string resident_lname { get; }
@@ -449,7 +460,7 @@ namespace ScreenerWFP
         /// <param name="screener_fname">Screeners first name</param>
         /// <param name="screener_lname">Screener last name</param>
         /// <param name="notes">Additional notes</param>
-        private Entry(string fname, string lname,
+        private Entry(string location, string fname, string lname,
             DateTime timeIn, DateTime timeOut, 
             ScreeningQuestions sq,
             string company,
@@ -457,14 +468,21 @@ namespace ScreenerWFP
             float temperatureIn, float temperatureOut,
             string screener_fname, string screener_lname, string notes
             )
-        { 
+        {
+            this.location = location;
             this.fname = fname;
             this.lname = lname;
             this.timeIn = timeIn;
             //A timeout value of DateTime.MinValue represents someone who hasn't been signed out.
             //MinValue will be ignored in all 
             this.timeOut = timeOut;
-            this._sq = sq;
+            if(sq is null)
+            {
+
+            }else
+            {
+                this._sq = sq;
+            }
             this.company = company;
             this.resident_fname = resident_fname;
             this.resident_lname = resident_lname;
@@ -490,14 +508,14 @@ namespace ScreenerWFP
         /// <param name="screener_fname"></param>
         /// <param name="screener_lname"></param>
         /// <param name="notes"></param>
-        private Entry(string fname, string lname,
+        private Entry(string location, string fname, string lname,
             DateTime timeIn, string timeOut,
             ScreeningQuestions sq,
             string company,
             string resident_fname, string resident_lname,
             float temperatureIn, float temperatureOut,
             string screener_fname, string screener_lname, string notes
-            ) : this(fname, lname, timeIn, DateTime.MinValue, sq, company, resident_fname, resident_lname, temperatureIn, temperatureOut,
+            ) : this(location, fname, lname, timeIn, DateTime.MinValue, sq, company, resident_fname, resident_lname, temperatureIn, temperatureOut,
                 screener_fname, screener_lname, notes)
         {
 
@@ -515,11 +533,11 @@ namespace ScreenerWFP
         /// <param name="temperatureOut">Visitors temperature upon departure</param>
         /// <param name="screener_fname">Screeners first name</param>
         /// <param name="screener_lname">Screener last name</param>
-        public Entry(string fname, string lname,
+        public Entry(string location, string fname, string lname,
             DateTime timeIn, DateTime timeOut,
             ScreeningQuestions sq,
             float temperatureIn, float temperatureOut,
-            string screener_fname, string screener_lname, string notes) : this(fname, lname, timeIn, timeOut, sq, "", "", "", temperatureIn, temperatureOut, screener_fname, screener_lname, notes) 
+            string screener_fname, string screener_lname, string notes) : this(location, fname, lname, timeIn, timeOut, sq, "", "", "", temperatureIn, temperatureOut, screener_fname, screener_lname, notes) 
         { }
 
         /// <summary>
@@ -535,16 +553,37 @@ namespace ScreenerWFP
         /// <param name="temperatureOut">Visitors temperature upon departure</param>
         /// <param name="screener_fname">Screeners first name</param>
         /// <param name="screener_lname">Screener last name</param>
-        public Entry(string fname, string lname,
+        public Entry(string location, string fname, string lname,
             DateTime timeIn, DateTime timeOut,
             ScreeningQuestions sq,
             string company,
             float temperatureIn, float temperatureOut,
-            string screener_fname, string screener_lname, string notes) : this(fname, lname, timeIn, timeOut, sq, company, "", "", temperatureIn, temperatureOut, screener_fname, screener_lname, notes)
+            string screener_fname, string screener_lname, string notes) : this(location, fname, lname, timeIn, timeOut, sq, company, "", "", temperatureIn, temperatureOut, screener_fname, screener_lname, notes)
         { }
 
         /// <summary>
-        /// Essential caregiver entry constructor
+        /// Essential Visitor entry constructor
+        /// </summary>
+        /// <param name="fname"></param>
+        /// <param name="lname"></param>
+        /// <param name="timeIn"></param>
+        /// <param name="timeOut"></param>
+        /// <param name="resident_fname"></param>
+        /// <param name="resident_lname"></param>
+        /// <param name="temperatureIn"></param>
+        /// <param name="temperatureOut"></param>
+        /// <param name="screener_fname"></param>
+        /// <param name="screener_lname"></param>
+        /// <param name="notes"></param>
+        public Entry(string location, string fname, string lname,
+            DateTime timeIn, DateTime timeOut,
+            string resident_fname, string resident_lname,
+            float temperatureIn, float temperatureOut,
+            string screener_fname, string screener_lname, string notes) : this(location, fname, lname, timeIn, timeOut, null, "", resident_fname, resident_lname, temperatureIn, temperatureOut, screener_fname, screener_lname, notes) 
+        { }
+
+        /// <summary>
+        /// Essential Caregiver entry constructor
         /// </summary>
         /// <param name="fname"></param>
         /// <param name="lname"></param>
@@ -557,16 +596,17 @@ namespace ScreenerWFP
         /// <param name="temperatureOut"></param>
         /// <param name="screener_fname"></param>
         /// <param name="screener_lname"></param>
-        public Entry(string fname, string lname,
+        public Entry(string location, string fname, string lname,
             DateTime timeIn, DateTime timeOut,
+            ScreeningQuestions sq,
             string resident_fname, string resident_lname,
             float temperatureIn, float temperatureOut,
-            string screener_fname, string screener_lname, string notes) : this(fname, lname, timeIn, timeOut, null, "", resident_fname, resident_lname, temperatureIn, temperatureOut, screener_fname, screener_lname, notes) 
+            string screener_fname, string screener_lname, string notes) : this(location, fname, lname, timeIn, timeOut, sq, "", resident_fname, resident_lname, temperatureIn, temperatureOut, screener_fname, screener_lname, notes)
         { }
 
         public override string ToString()
         {
-            return $"{this.fname}, {this.lname}, {this.timeIn.ToString()}, {this.timeOut.ToString()}, " +
+            return $"{this.location}, {this.fname}, {this.lname}, {this.timeIn.ToString()}, {this.timeOut.ToString()}, " +
                 $"{this.sq.ToString()}, {this.company}, {this.temperatureIn.ToString()}, {this.temperatureOut.ToString()}, " +
                 $"{this.screener_fname}, {this.screener_lname}, {this.notes}";
         }
@@ -655,7 +695,7 @@ namespace ScreenerWFP
                     {
                         output += 'Y';
                     }
-                    else if(answer == false)
+                    else
                     {
                         output += 'N';
                     }
@@ -671,6 +711,20 @@ namespace ScreenerWFP
         public EntryMap()
         {
             AutoMap(CultureInfo.InvariantCulture);
+            Map(m => m.sq).TypeConverter<ScreeningQuestionsConverter<Entry.ScreeningQuestions>>();
+        }
+
+        public class ScreeningQuestionsConverter<T> : DefaultTypeConverter
+        {
+            public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+            {
+                return new Entry.ScreeningQuestions(text);
+            }
+
+            public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+            {
+                return ((Entry.ScreeningQuestions)value).ToString();
+            }
         }
     }
 }

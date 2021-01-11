@@ -1,0 +1,2 @@
+location,fname,lname,timeIn,timeOut,sq,company,resident_fname,resident_lname,temperatureIn,temperatureOut,screener_fname,screener_lname,notes
+Active/10-01-2021_SHData.csv;0,Jack,Murray,01/10/2021 20:00:08,01/01/0001 00:00:00,NYYN,,Arnold,Schawrzenegger,38.4,0,Jack,Murray,

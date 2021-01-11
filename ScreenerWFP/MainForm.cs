@@ -52,6 +52,7 @@ namespace ScreenerWFP
             }
             EntryTypeComboBox.SelectedIndex = 0;
             EntryTable.AutoSize = true;
+            ScreenerDropdown.SelectedIndex = 0;
 
             //Testing
             
@@ -59,16 +60,18 @@ namespace ScreenerWFP
 
         private List<string> LeaveBtn_IDs = new List<string>();
 
+
+        private List<Entry> WorkingSet = new List<Entry>();
         /// <summary>
         /// Update the EntryTable object with the passed entries.
         /// </summary>
         /// <param name="entries">The list of entries to display</param>
         /// <param name="format">The tables format</param>
         /// <param name="sortby">The property to sort by. If invalid, will sort by last name</param>
-        private void UpdateEntryTable(List<Entry> entries, TableFormat format, string sortby)
+        private void UpdateEntryTable(TableFormat format, string sortby)
         {
             //First, sort the list
-            entries = SortList(entries, sortby).ToList();
+            WorkingSet = SortList(WorkingSet, sortby).ToList();
             //Next, format the table with its headers and such.
             //Reset the table
             EntryTable.Controls.Clear();
@@ -123,7 +126,7 @@ namespace ScreenerWFP
                 EntryTable.Controls.Add(newLabel);
                 //Need to make them sortable
             }
-            foreach(var entry in entries)
+            foreach(var entry in WorkingSet)
             {
                 if(headers.Contains("First Name"))
                 {
@@ -216,8 +219,7 @@ namespace ScreenerWFP
                 //Each LeaveBtn will have access to this method, which will fill in the exit time
                 //and ask for a confirmation that the visit has ended
                 leaveBtn.Click += (sender, e) => LeaveBtn_Click(sender, e, 
-                    EntryTable.GetRow(leaveBtn),
-                    LeaveBtn_IDs[EntryTable.GetRow(leaveBtn)]);
+                    WorkingSet[EntryTable.GetRow(leaveBtn)].location);
 
             }
 
@@ -290,6 +292,7 @@ namespace ScreenerWFP
                 Label CompanyLbl = new Label();
                 CompanyLbl.Text = "Company: ";
                 TextBox CompanyTxt = new TextBox();
+                CompanyTxt.Name = "Company";
                 AddEntryPanel.Controls.AddRange(new Control[] { CompanyLbl, CompanyTxt });
             }
             else if (((Button)sender).Text == "NEW ESSENTIAL CAREGIVER" ||
@@ -298,13 +301,17 @@ namespace ScreenerWFP
                 Label ResidentFNameLbl = new Label();
                 ResidentFNameLbl.Text = "Residents First Name";
                 TextBox ResidentFNameTxt = new TextBox();
-                
+                ResidentFNameTxt.Name = "ResidentFNameTxt";
+
+
                 Label ResidentLNameLbl = new Label();
                 ResidentLNameLbl.Text = "Residents Last Name";
-                TextBox ResidentLnameTxt = new TextBox();
+                TextBox ResidentLNameTxt = new TextBox();
+                ResidentLNameTxt.Name = "ResidentLNameTxt";
+
                 AddEntryPanel.Controls.AddRange(new Control[] {
-                ResidentFNameLbl, ResidentFNameTxt,
-                ResidentLNameLbl, ResidentLnameTxt
+                    ResidentFNameLbl, ResidentFNameTxt,
+                    ResidentLNameLbl, ResidentLNameTxt
                 });
             }
             else
@@ -314,14 +321,18 @@ namespace ScreenerWFP
 
             if(((Button)sender).Text != "NEW ESSENTIAL VISITOR")
             {
-                Button SymptomBtn = new Button();
+                CheckBox SymptomBtn = new CheckBox();
                 SymptomBtn.Text = "Has Symptoms";
-                Button TravelBtn = new Button();
+                SymptomBtn.Name = "SymptomBtn";
+                CheckBox TravelBtn = new CheckBox();
                 TravelBtn.Text = "Has traveled within 2 wks";
-                Button ContactBtn = new Button();
+                TravelBtn.Name = "TravelBtn";
+                CheckBox ContactBtn = new CheckBox();
                 ContactBtn.Text = "Has had contact covid in 2 wks";
-                Button PPEBtn = new Button();
+                ContactBtn.Name = "ContactBtn";
+                CheckBox PPEBtn = new CheckBox();
                 PPEBtn.Text = "Didnt Wear appropriate PPE";
+                PPEBtn.Name  = "PPEBtn";
                 AddEntryPanel.Controls.AddRange(new Control[] {
                 SymptomBtn, TravelBtn, ContactBtn, PPEBtn
                 });
@@ -332,45 +343,190 @@ namespace ScreenerWFP
 
             Button ConfirmBtn = new Button();
             ConfirmBtn.Text = "Confirm";
+
+            ConfirmBtn.Click += new System.EventHandler(ConfirmBtn_Click);
+
+            Button CancelBtn = new Button();
+            CancelBtn.Text = "Cancel";
+            CancelBtn.Click += new System.EventHandler(Reset);
+
             AddEntryPanel.Controls.AddRange(new Control[] {
-                ConfirmBtn 
+                ConfirmBtn,
+                CancelBtn
             });
             
             
             //Once the confirm button is clicked, add the
             //information to a new Entry object, and add it to the database.
             //Then, update the table and revert the panel back to the various add entry buttons
-        }
-
-        private void LeaveBtn_Click(object sender, EventArgs e, int row, string entryID)
-        {
-
-            //TODO:
-            //Set the leaving time to now  
             
-            //screenerdata.updateentry(entryid,
-            //    entryfromrow(row));
+            //Local function to be added to the ConfirmBtn.
+            //Made as a local function so it has access to this functions local variables, making
+            //coding a bit cleaner
+            void ConfirmBtn_Click(object local_sender, EventArgs local_e)
+            {
+                //Putting it here to create less calls
+                string senderName = ((Button)sender).Name;
+                string sq = "";
+                if(senderName != "AddEssentialVisitorBtn")
+                {
+                    if (((CheckBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("SymptomBtn")]).Checked)
+                    {
+                        sq += "Y";
+                    }
+                    else
+                    {
+                        sq += "N";
+                    }
+                    if (((CheckBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("TravelBtn")]).Checked)
+                    {
+                        sq += "Y";
+                    }
+                    else
+                    {
+                        sq += "N";
+                    }
+                    if (((CheckBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("ContactBtn")]).Checked)
+                    {
+                        sq += "Y";
+                    }
+                    else
+                    {
+                        sq += "N";
+                    }
+                    if (((CheckBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("PPEBtn")]).Checked)
+                    {
+                        sq += "Y";
+                    }
+                    else
+                    {
+                        sq += "N";
+                    }
+                }
+
+                try
+                {
+                    if (senderName == "AddEssentialVisitorBtn")
+                    {
+                        ScreenerData.AddEntry(new Entry("",
+                            FNameTxt.Text, LNameTxt.Text,
+                            DateTime.Now, DateTime.MinValue,
+                            //This mess of a line of code means "Grab the residents first name"
+                            ((TextBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("ResidentFNameTxt")]).Text,
+                            ((TextBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("ResidentLNameTxt")]).Text,
+                            float.Parse(TempInTxt.Text), 0.00f,
+                            ScreenerDropdown.Text.Split()[0], ScreenerDropdown.Text.Split()[1],
+                            ""//empty notes
+                            ));
+                    }
+                    else if (senderName == "AddESPBtn")
+                    {
+                        ScreenerData.AddEntry(new Entry("",
+                            FNameTxt.Text, LNameTxt.Text,
+                            DateTime.Now, DateTime.MinValue,
+                            new Entry.ScreeningQuestions(sq),
+                            //this mess of a line means "Get the company name"
+                            ((TextBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("Company")]).Text,
+                            float.Parse(TempInTxt.Text), 0.00f,
+                            ScreenerDropdown.Text.Split()[0], ScreenerDropdown.Text.Split()[1],
+                            ""//empty notes
+                            ));
+                    }
+                    else if (senderName == "AddEssentialCaregiverBtn")
+                    {
+                        ScreenerData.AddEntry(new Entry("",
+                            FNameTxt.Text, LNameTxt.Text,
+                            DateTime.Now, DateTime.MinValue,
+                            new Entry.ScreeningQuestions(sq),
+                            //This mess of a line of code means "Grab the residents first name"
+                            ((TextBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("ResidentFNameTxt")]).Text,
+                            ((TextBox)AddEntryPanel.Controls[AddEntryPanel.Controls.IndexOfKey("ResidentLNameTxt")]).Text,
+                            float.Parse(TempInTxt.Text), 0.00f,
+                            ScreenerDropdown.Text.Split()[0], ScreenerDropdown.Text.Split()[1],
+                            ""//empty notes
+                            ));
+                    }
+                    else if (senderName == "AddEmployeeBtn")
+                    {
+                        ScreenerData.AddEntry(new Entry("",
+                            FNameTxt.Text, LNameTxt.Text,
+                            DateTime.Now, DateTime.MinValue,
+                            new Entry.ScreeningQuestions(sq),
+                            float.Parse(TempInTxt.Text), 0.00f,
+                            ScreenerDropdown.Text.Split()[0], ScreenerDropdown.Text.Split()[1],
+                            ""//empty notes
+                            ));
+                    }
+
+
+                    Reset(local_sender, local_e);
+                } catch (FormatException)
+                {
+
+                }
+
+            }
+
+            //Resets the AddEntryPanel to having the 4 buttons. 
+            void Reset(object local_sender, EventArgs local_e)
+            {
+
+                List<string> KeepNames = new List<string>() {
+                "AddEssentialVisitorBtn", "AddESPBtn",
+                "AddEssentialCaregiverBtn", "AddEmployeeBtn"
+                };
+                List<Control> ToDelete = new List<Control>();
+                foreach (Control control in AddEntryPanel.Controls)
+                {
+                    if (!KeepNames.Contains(control.Name))
+                    {
+                        ToDelete.Add(control);
+                    }
+                }
+                foreach (Control control in ToDelete)
+                {
+                    AddEntryPanel.Controls.Remove(control);
+                }
+
+                AddEssentialCaregiverBtn.Show();
+                AddESPBtn.Show();
+                AddEmployeeBtn.Show();
+                AddEssentialVisitorBtn.Show();
+
+            }
+        }
+
+        /// <summary>
+        /// Open the row for editing, then ask for confirmation that the entry is to be saved
+        /// then the row deleted.
+        /// </summary>
+        /// <param name="sender">Triggering object</param>
+        /// <param name="e">Triggering event</param>
+        /// <param name="location">entries location to edit</param>
+        private void LeaveBtn_Click(object sender, EventArgs e, string location)
+        {
+            //1. Set the sender's row to Edit.
+            //2. Change the sender's text to 'Confirm' and give it the event handler
+                //ConfirmChangesBtn_Click
+            //3. Change the TimeOut text box's text to the current time
+            //4. Set the focus to the Temp In
 
 
         }
 
-        //private entry entryfromrow(int row)
-        //{
-        //    //create a 'mock-up' entry with default values
-        //    string fname = "";
-        //    string lname = "";
-        //    datetime timein = datetime.now;
-        //    datetime timout = datetime.minvalue;
-        //    string sq = "nnnn";
-        //    string company = "";
-        //    string resident_fname = "";
-        //    string resident_lanem = "";
-        //    float tempin = 0.0f;
-        //    float tempout = 0.0f;
-        //    string screener_fname = "";
-        //    string screener_lname = "";
-        //    string notes = "";
-        //}
+        private void ConfirmChangesBtn_Click(object sender, EventArgs e, string location)
+        {
+            //1. Tell the Database to update the entry, using the location parameter
+            //2. Remove this entry from the Working Set
+            //3. Tell the table to update itself from the Working Set
+
+        }
+
+        private void EditBtn_Click(object sender, EventArgs e)
+        {
+            //1. Enable all the text fields on the Row
+            //2. 
+        }
 
 
         private void EntryTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
@@ -406,10 +562,9 @@ namespace ScreenerWFP
                 st.Add(new SearchTerm(SearchTerm.Fields.ISACTIVE, ""));
             }
 
-            
-           
-            UpdateEntryTable(ScreenerData.SearchAllEntries(
-                st), tf, "lname");
+
+            WorkingSet = ScreenerData.SearchAllEntries(st);
+            UpdateEntryTable(tf, "lname");
         }
     }
 }
