@@ -9,7 +9,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using System.Text.RegularExpressions;
 using CsvHelper.TypeConversion;
-
+using System.Diagnostics;
 namespace ScreenerWFP
 {
     /// <summary>
@@ -106,7 +106,7 @@ namespace ScreenerWFP
         public static void UpdateEntry(string location, Entry newEntry)
         {
             //First, parse location to find out which file and index to look at
-            Regex rgx = new Regex("(?<file>.*);(?<index>..*)");
+            Regex rgx = new Regex("[/|\\\\](?<file>.*);(?<index>..*)");
             Match match = rgx.Match(location);
 
             //Best way to update a csv is to read in the whole thing, update it in memory, then overwrite the old csv.
@@ -187,7 +187,6 @@ namespace ScreenerWFP
         {
             List<string> files = new List<string>();
             Regex rgx = new Regex("\\\\(?<date>.*)_");
-            
             //Check the dates we're going to be looking at, to facilitate searching
             foreach (string file in Directory.GetFiles(activeFolderPath))
             {
@@ -199,7 +198,7 @@ namespace ScreenerWFP
                 }
                 
             }
-
+            
             if (searchArchived)
             {
                 foreach(string file in Directory.GetFiles(archiveFolderPath))
@@ -224,6 +223,7 @@ namespace ScreenerWFP
                     records.AddRange(toAdd);
                 }
             }
+            
             List<Entry> output = new List<Entry>();
             
             foreach(Entry record in records)
@@ -242,7 +242,6 @@ namespace ScreenerWFP
                     output.Add(record);
                 }
             }
-
             return output;
         }
         /// <summary>
@@ -460,7 +459,7 @@ namespace ScreenerWFP
         /// <param name="screener_fname">Screeners first name</param>
         /// <param name="screener_lname">Screener last name</param>
         /// <param name="notes">Additional notes</param>
-        private Entry(string location, string fname, string lname,
+        public Entry(string location, string fname, string lname,
             DateTime timeIn, DateTime timeOut, 
             ScreeningQuestions sq,
             string company,

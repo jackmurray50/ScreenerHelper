@@ -99,6 +99,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Entry.datasource" />
+    <None Include="Properties\DataSources\Entry.ScreeningQuestions.datasource" />
+    <None Include="Properties\DataSources\EntryMap.datasource" />
+    <None Include="Properties\DataSources\EntryMap.ScreeningQuestionsConverter`1.datasource" />
+    <None Include="Properties\DataSources\MainForm.datasource" />
+    <None Include="Properties\DataSources\Program.datasource" />
+    <None Include="Properties\DataSources\ScreenerData.datasource" />
+    <None Include="Properties\DataSources\ScreenerWFP.Properties.Resources.datasource" />
+    <None Include="Properties\DataSources\ScreenerWFP.Properties.Settings.datasource" />
+    <None Include="Properties\DataSources\SearchTerm.datasource" />
+    <None Include="Properties\DataSources\SearchTerm.Fields.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
