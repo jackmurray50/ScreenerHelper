@@ -401,6 +401,14 @@ namespace ScreenerWFP
                         entry.temperatureOut <= float.Parse(Key);
                 case Fields.ANY: //General searech in all fields
                     //First, figure out if its fits a date, a datetime
+                    if (entry.fname.Contains(Key) ||
+                        entry.lname.Contains(Key) ||
+                        entry.resident_fname.Contains(Key) ||
+                        entry.resident_lname.Contains(Key))
+                    {
+                        return true;
+                    }
+
                     break;
                 case Fields.ISACTIVE:
                     return entry.timeOut == DateTime.MinValue;

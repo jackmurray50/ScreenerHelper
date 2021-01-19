@@ -17,6 +17,7 @@ using System.Reflection;
 using CsvHelper;
 using System.Globalization;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 namespace ScreenerWFP
 {
     public partial class MainForm : Form
@@ -71,8 +72,6 @@ namespace ScreenerWFP
         /// <summary>
         /// Update the EntryTable object with the current working set
         /// </summary>
-        /// <param name="format">The tables format</param>
-        /// <param name="sortby">The property to sort by. If invalid, will sort by last name</param>
         private void UpdateEntryTable()
         {
             EntryTable.SuspendLayout();
@@ -534,7 +533,6 @@ namespace ScreenerWFP
         /// </summary>
         /// <param name="sender">Triggering object</param>
         /// <param name="e">Triggering event</param>
-        /// <param name="location">entries location to edit</param>
         private void LeaveBtn_Click(object sender, DataGridViewCellEventArgs e) 
         {
             DataGridView senderGrid = (DataGridView)sender;
@@ -560,6 +558,7 @@ namespace ScreenerWFP
                         tb.Text = entry.Value.ToString();
                         flp.Controls.Add(lbl);
                         flp.Controls.Add(tb);
+                        tb.Name = entry.OwningColumn.Name + "txt";
                         flp.Name = entry.OwningColumn.Name;
                         flp.AutoSize = true;
                         flp.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -575,6 +574,7 @@ namespace ScreenerWFP
                 templbl.Text = "Temp Out";
                 tempOutFLP.Controls.Add(templbl);
                 TextBox temptxt = new TextBox();
+                temptxt.Name = "tempOut";
                 tempOutFLP.Controls.Add(temptxt);
 
                 FlowLayoutPanel sqOutFLP = new FlowLayoutPanel();
@@ -595,6 +595,7 @@ namespace ScreenerWFP
                 timeoutlbl.Text = "Time Out: ";
                 TextBox timeouttxt = new TextBox();
                 timeouttxt.Text = DateTime.Now.ToShortTimeString();
+                timeouttxt.Name = "timeOut";
                 timeOutFLP.Controls.AddRange(new Control[]
                 {
                     timeoutlbl, timeouttxt
@@ -615,7 +616,6 @@ namespace ScreenerWFP
                 Button confirmBtn = new Button();
                 confirmBtn.Text = "Confirm";
                 confirmBtn.Click += new System.EventHandler(this.ConfirmChangesBtn_Click);
-
 
                 Button cancelBtn = new Button();
                 cancelBtn.Text = "Cancel";
@@ -639,76 +639,164 @@ namespace ScreenerWFP
         }
         private void StylePopup(Panel popup)
         {
+            //Set all the flowlayouts to autosize
+            foreach(Control ctrl in popup.Controls)
+            {
+                ctrl.AutoSize = true;
+                if(ctrl is FlowLayoutPanel)
+                {
+                    ((FlowLayoutPanel)ctrl).AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                    ctrl.Enabled = false;
+                }
+
+            }
             popup.BackColor = Color.Gray;
             popup.BorderStyle = BorderStyle.FixedSingle;
             popup.Location = new Point(this.panel1.Width/4, this.panel1.Height/3);
-            popup.AutoSize = true;
-            popup.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            popup.MaximumSize = new Size(this.panel1.Width / 2, 200);
+            popup.Width = this.panel1.Width / 2;
+            popup.Height = 500;
             popup.BringToFront();
+            popup.Name = "popup";
         }
 
         private void ConfirmChangesBtn_Click(object sender, EventArgs e)
         {
-
-            Panel senderPanel = (Panel)((Button)sender).Parent;
-            //1. Work out which entry to remove
-            Entry toRemove = WorkingSet.Where(n => n.location ==
-                            senderPanel.Controls["location"].Text).First();
-            //2. Tell the Database to update the entry, using the location parameter
-            //2.1 Create a new entry
-            string fname = "";
-            if (senderPanel.Controls.ContainsKey("fname"))
+            //Doublecheck the column names
+            try
             {
-                fname = senderPanel.Controls["fname"].Text;
-            }
-            string lname = "";
-            if (senderPanel.Controls.ContainsKey("lname"))
-            {
-                lname = senderPanel.Controls["lname"].Text;
-            }
-            DateTime timein = toRemove.timeIn;
-            if (senderPanel.Controls.ContainsKey("timeIn"))
-            {
-                //TODO: Figure this out? 
-                //Keep the updated time, but the old date.
-                //Maybe take the datetime from the working set, then use a DatePicker control?
-                //timein = senderPanel.Controls["timeIn"].Text;
-            }
-            DateTime timeout = DateTime.MinValue;
-            //if(senderPanel.Controls.ContainsKey("time"))
-            float tempin = 0.0f;
-            float tempout = 0.0f;
-            string company = "";
-            string resident_fname = "";
-            string resident_lname = "";
-            Entry.ScreeningQuestions sq = null;
-            string screener_fname = "";
-            string screener_lname = "";
-            string notes = "";
-            ScreenerData.UpdateEntry(toRemove.location, new Entry(
-                toRemove.location, //location
-                fname, //first name
-                lname,
-                timein,
-                timeout,
-                sq,
-                company,
-                resident_fname,
-                resident_lname,
-                tempin,
-                tempout,
-                screener_fname,
-                screener_lname,
-                notes));
+                Panel senderPanel = (Panel)((Button)sender).Parent;
+                //1. Work out which entry to remove
+                Entry toRemove = WorkingSet.Where(n => n.location ==
+                                senderPanel.Controls["location"].Text).First();
+                //2. Tell the Database to update the entry, using the location parameter
+                //2.1 Create a new entry
+                string fname = "";
+                if (senderPanel.Controls.ContainsKey("fname"))
+                {
+                    fname = senderPanel.Controls["fname"].Controls["fnametxt"].Text;
+                }
+                string lname = "";
+                if (senderPanel.Controls.ContainsKey("lname"))
+                {
+                    lname = senderPanel.Controls["lname"].Controls["lnametxt"].Text;
+                }
+                DateTime timein = toRemove.timeIn;
+                if (senderPanel.Controls.ContainsKey("timeIn"))
+                {
+                    DateTime date = toRemove.timeIn.Date;
+                    Trace.WriteLine(senderPanel.Controls["timeIn"].Controls["timeIntxt"].Text);
+                    string inputTime = Regex.Match(senderPanel.Controls["timeIn"].Controls["timeIntxt"].Text,
+                                "[0-9]?[0-9]:[0-9][0-9]").Value;
+                    if(inputTime.Length == 4)
+                    {
+                        inputTime = "0" + inputTime;
+                    }
+                    TimeSpan time = TimeSpan.ParseExact(
+                            inputTime,
+                            //Format
+                            "h\\:mm",
+                            CultureInfo.InvariantCulture);
 
-            //3. Remove the entry from the working set
-            WorkingSet.Remove(toRemove);
-            //4. Close the 'window'
-            //CancelPopupBtnClick(sender, e);
-            //5. Tell the table to update itself from the Working Set
-            UpdateEntryTable();
+                    if (senderPanel.Controls["timeIn"].Controls["timeIntxt"].Text.Contains("PM")){
+                        time.Add(new TimeSpan(12, 0, 0));
+                    }
+                    timein = date.Add(time);
+                }
+                Trace.WriteLine(timein);
+                DateTime timeout = toRemove.timeOut;
+                if (senderPanel.Controls.ContainsKey("timeOut"))
+                {
+                    DateTime date = toRemove.timeIn.Date;
+                    Trace.WriteLine(senderPanel.Controls["timeOut"].Controls["timeOuttxt"].Text);
+                    string inputTime = Regex.Match(senderPanel.Controls["timeOut"].Controls["timeOuttxt"].Text,
+                                "[0-9]?[0-9]:[0-9][0-9]").Value;
+                    if (inputTime.Length == 4)
+                    {
+                        inputTime = "0" + inputTime;
+                    }
+                    TimeSpan time = TimeSpan.ParseExact(
+                            inputTime,
+                            //Format
+                            "h\\:mm",
+                            CultureInfo.InvariantCulture);
 
+                    if (senderPanel.Controls["timeIn"].Controls["timeIntxt"].Text.Contains("PM"))
+                    {
+                        time.Add(new TimeSpan(12, 0, 0));
+                    }
+                    timein = date.Add(time);
+                }
+                float tempin = 0.0f;
+                if (senderPanel.Controls.ContainsKey("tempIn"))
+                {
+                    tempin = float.Parse(senderPanel.Controls["tempIn"].Controls["tempIntxt"].Text);
+                }
+                float tempout = 0.0f;
+                if (senderPanel.Controls.ContainsKey("tempOut"))
+                {
+                    tempout = float.Parse(senderPanel.Controls["tempOut"].Controls["tempOuttxt"].Text);
+                }
+                string company = "";
+                if (senderPanel.Controls.ContainsKey("company"))
+                {
+                    company = senderPanel.Controls["company"].Controls["companytxt"].Text;
+                }
+                string resident_fname = "";
+                if (senderPanel.Controls.ContainsKey("resident_fname"))
+                {
+                    resident_fname = senderPanel.Controls["resident_fname"].Controls["resident_fnametxt"].Text;
+                }
+                string resident_lname = "";
+                if (senderPanel.Controls.ContainsKey("resident_lname"))
+                {
+                    resident_fname = senderPanel.Controls["resident_lname"].Controls["resident_lnametxt"].Text;
+                }
+                Entry.ScreeningQuestions sq = null;
+                if (senderPanel.Controls.ContainsKey("sq"))
+                {
+                    sq = new Entry.ScreeningQuestions(senderPanel.Controls["sq"].Controls["sqtxt"].Text);
+                }
+                string screener_fname = "";
+                string screener_lname = "";
+                if (senderPanel.Controls.ContainsKey("screenerName"))
+                {
+                    //TODO: Split the first and last name intelligently
+                }
+                string notes = "";
+                if (senderPanel.Controls.ContainsKey("notes"))
+                {
+                    notes = senderPanel.Controls["notes"].Controls["notestxt"].Text;
+                }
+                ScreenerData.UpdateEntry(toRemove.location, new Entry(
+                    toRemove.location, //location
+                    fname, //first name
+                    lname,
+                    timein,
+                    timeout,
+                    sq,
+                    company,
+                    resident_fname,
+                    resident_lname,
+                    tempin,
+                    tempout,
+                    screener_fname,
+                    screener_lname,
+                    notes));
+
+                //3. Remove the entry from the working set
+                WorkingSet.Remove(toRemove);
+                //4. Close the 'window'
+                CancelPopupBtnClick(sender, e);
+                //5. Tell the table to update itself from the Working Set
+                UpdateEntryTable();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+                //TODO: Make a 'you messed up' warning appear
+                //probably make a "Check if the 'you messed up' warning exists, if so delete it" block
+                //in the Try block, then I can just make the warning pop up here every time
+            }
         }
 
 
