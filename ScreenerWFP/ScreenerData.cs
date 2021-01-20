@@ -334,6 +334,7 @@ namespace ScreenerWFP
         }
         public enum Fields
         {
+            TYPE,
             ISACTIVE,
             FIRSTNAME,
             LASTNAME,
@@ -363,6 +364,43 @@ namespace ScreenerWFP
         public bool Validate(Entry entry)
         {
             switch (Field) {
+                case Fields.TYPE:
+                    if (Key == "ESP")
+                    {
+                        if (entry.company != "")
+                        {
+                            return true;
+                        }
+                    } else if (Key == "EssentialCaregiver")
+                    {
+                        if ((entry.resident_fname != "" ||
+                            entry.resident_lname != "") &&
+                            entry.sq != "")
+                        {
+                            return true;
+                        }
+
+                    } else if (Key == "EssentialVisitor")
+                    {
+                        if ((entry.resident_lname != "" ||
+                            entry.resident_fname != "") &&
+                            entry.sq == "")
+                        {
+                            return true;
+                        }
+
+                    }else if(Key == "Employee")
+                    {
+                        if(entry.resident_fname == "" &&
+                            entry.resident_lname == "" &&
+                            entry.sq != "" &&
+                            entry.company == "")
+                        {
+                            return true;
+                        }
+
+                    }
+                    return false;
                 case Fields.COMPANY:
                     return entry.company.ToLower().Contains(Key.ToLower());
                 case Fields.ENTER_AFTER_DATE:

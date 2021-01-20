@@ -1,0 +1,3 @@
+location,fname,lname,timeIn,timeOut,sq,company,resident_fname,resident_lname,temperatureIn,temperatureOut,screener_fname,screener_lname,notes
+Active/19-01-2021_SHData.csv;0,Erika,Granger,01/19/2021 20:46:11,01/01/0001 00:00:00,NNNN,,,,38,0,Jack,Murray,
+Active\19-01-2021_SHData.csv;1,Test,_Test,01/19/2021 21:07:29,01/01/0001 00:00:00,,,Robert,Muller,38,0,Isabelle,O'Meara,

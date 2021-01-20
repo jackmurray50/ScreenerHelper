@@ -32,7 +32,7 @@ namespace ScreenerWFP
             this.EntryTypeComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.SearchBtn = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.MainSearchTxt = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.ScreenerDropdown = new System.Windows.Forms.ComboBox();
@@ -91,13 +91,13 @@ namespace ScreenerWFP
             this.SearchBtn.UseVisualStyleBackColor = true;
             this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
             // 
-            // textBox1
+            // MainSearchTxt
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(753, 4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(257, 30);
-            this.textBox1.TabIndex = 13;
+            this.MainSearchTxt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MainSearchTxt.Location = new System.Drawing.Point(753, 4);
+            this.MainSearchTxt.Name = "MainSearchTxt";
+            this.MainSearchTxt.Size = new System.Drawing.Size(257, 30);
+            this.MainSearchTxt.TabIndex = 13;
             // 
             // panel2
             // 
@@ -112,7 +112,7 @@ namespace ScreenerWFP
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.EntryTypeComboBox);
             this.panel2.Controls.Add(this.SearchBtn);
-            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.MainSearchTxt);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
@@ -194,9 +194,9 @@ namespace ScreenerWFP
             this.AddEntryPanel.Controls.Add(this.AddEmployeeBtn);
             this.AddEntryPanel.Controls.Add(this.AddESPBtn);
             this.AddEntryPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.AddEntryPanel.Location = new System.Drawing.Point(0, 899);
+            this.AddEntryPanel.Location = new System.Drawing.Point(0, 875);
             this.AddEntryPanel.Name = "AddEntryPanel";
-            this.AddEntryPanel.Size = new System.Drawing.Size(1902, 54);
+            this.AddEntryPanel.Size = new System.Drawing.Size(1902, 78);
             this.AddEntryPanel.TabIndex = 32;
             // 
             // AddEssentialVisitorBtn
@@ -206,7 +206,7 @@ namespace ScreenerWFP
             this.AddEssentialVisitorBtn.Location = new System.Drawing.Point(1, 1);
             this.AddEssentialVisitorBtn.Margin = new System.Windows.Forms.Padding(1);
             this.AddEssentialVisitorBtn.Name = "AddEssentialVisitorBtn";
-            this.AddEssentialVisitorBtn.Size = new System.Drawing.Size(488, 50);
+            this.AddEssentialVisitorBtn.Size = new System.Drawing.Size(488, 76);
             this.AddEssentialVisitorBtn.TabIndex = 0;
             this.AddEssentialVisitorBtn.Text = "NEW ESSENTIAL VISITOR";
             this.AddEssentialVisitorBtn.UseVisualStyleBackColor = true;
@@ -219,7 +219,7 @@ namespace ScreenerWFP
             this.AddEssentialCaregiverBtn.Location = new System.Drawing.Point(491, 1);
             this.AddEssentialCaregiverBtn.Margin = new System.Windows.Forms.Padding(1);
             this.AddEssentialCaregiverBtn.Name = "AddEssentialCaregiverBtn";
-            this.AddEssentialCaregiverBtn.Size = new System.Drawing.Size(476, 50);
+            this.AddEssentialCaregiverBtn.Size = new System.Drawing.Size(476, 76);
             this.AddEssentialCaregiverBtn.TabIndex = 2;
             this.AddEssentialCaregiverBtn.Text = "NEW ESSENTIAL CAREGIVER";
             this.AddEssentialCaregiverBtn.UseVisualStyleBackColor = true;
@@ -232,7 +232,7 @@ namespace ScreenerWFP
             this.AddEmployeeBtn.Location = new System.Drawing.Point(969, 1);
             this.AddEmployeeBtn.Margin = new System.Windows.Forms.Padding(1);
             this.AddEmployeeBtn.Name = "AddEmployeeBtn";
-            this.AddEmployeeBtn.Size = new System.Drawing.Size(436, 50);
+            this.AddEmployeeBtn.Size = new System.Drawing.Size(436, 77);
             this.AddEmployeeBtn.TabIndex = 1;
             this.AddEmployeeBtn.Text = "NEW EMPLOYEE";
             this.AddEmployeeBtn.UseVisualStyleBackColor = true;
@@ -245,7 +245,7 @@ namespace ScreenerWFP
             this.AddESPBtn.Location = new System.Drawing.Point(1407, 1);
             this.AddESPBtn.Margin = new System.Windows.Forms.Padding(1);
             this.AddESPBtn.Name = "AddESPBtn";
-            this.AddESPBtn.Size = new System.Drawing.Size(488, 50);
+            this.AddESPBtn.Size = new System.Drawing.Size(488, 77);
             this.AddESPBtn.TabIndex = 3;
             this.AddESPBtn.Text = "NEW ESSENTIAL SERVICE PROVIDER";
             this.AddESPBtn.UseVisualStyleBackColor = true;
@@ -274,7 +274,7 @@ namespace ScreenerWFP
             this.EntryTable.RowHeadersWidth = 4;
             this.EntryTable.RowTemplate.Height = 24;
             this.EntryTable.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.EntryTable.Size = new System.Drawing.Size(1902, 899);
+            this.EntryTable.Size = new System.Drawing.Size(1902, 875);
             this.EntryTable.TabIndex = 33;
             this.EntryTable.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.LeaveBtn_Click);
             // 
@@ -303,7 +303,7 @@ namespace ScreenerWFP
         private System.Windows.Forms.ComboBox EntryTypeComboBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button SearchBtn;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox MainSearchTxt;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button BtnSearch;
         private System.Windows.Forms.Label label2;

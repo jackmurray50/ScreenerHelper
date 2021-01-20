@@ -1,13 +1,13 @@
 location,fname,lname,timeIn,timeOut,sq,company,resident_fname,resident_lname,temperatureIn,temperatureOut,screener_fname,screener_lname,notes
 Active\13-01-2021_SHData.csv;2,Lourdes,Bauswell,01/13/2021 06:02:46,01/01/0001 00:00:00,NNNN,,,,37.7,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;3,Hannah,Edmison,01/13/2021 03:21:46,01/01/0001 00:00:00,NNNN,,,,38.4,0,Jack,Murray,
-Active\13-01-2021_SHData.csv;2,,,01/01/0001 00:00:00,01/01/0001 00:00:00,,,,,0,0,,,
+Active\13-01-2021_SHData.csv;2,fdsa,fdsafd,01/13/2021 12:00:00,01/01/0001 00:00:00,NNNN,fdsa,fdsa,,32,0,,,fdsa
 Active\13-01-2021_SHData.csv;6,Hui,Portaro,01/13/2021 03:14:46,01/01/0001 00:00:00,NNNN,,,,37.1,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;7,Josefa,Opitz,01/13/2021 00:33:46,01/01/0001 00:00:00,NNNN,,,,37.8,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;8,Lea,Steinhaus,01/13/2021 02:08:46,01/01/0001 00:00:00,NNNN,,,,35.8,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;9,Paola,Vielma,01/13/2021 04:27:47,01/01/0001 00:00:00,NNNN,,,,36.5,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;10,Hortencia,Bresser,01/13/2021 04:27:47,01/01/0001 00:00:00,NNNN,,,,36.5,0,Jack,Murray,
-Active\13-01-2021_SHData.csv;11,Leanna,Tijerina,01/13/2021 02:45:47,01/01/0001 00:00:00,NNNN,,,,37.2,0,Jack,Murray,
+Active\13-01-2021_SHData.csv;8,Lea,Steinhaus,01/13/2021 02:08:00,01/01/0001 00:00:00,NNNN,,,,35.8,0,,,
 Active\13-01-2021_SHData.csv;12,Danilo,Pride,01/13/2021 03:22:47,01/01/0001 00:00:00,NNNN,,,,35.3,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;13,Huey,Marcille,01/13/2021 03:22:47,01/01/0001 00:00:00,NNNN,,,,35.3,0,Jack,Murray,
 Active\13-01-2021_SHData.csv;14,Apolonia,Warne,01/13/2021 01:40:47,01/01/0001 00:00:00,NNNN,,,,36,0,Jack,Murray,

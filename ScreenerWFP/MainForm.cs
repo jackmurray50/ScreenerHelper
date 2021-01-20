@@ -22,6 +22,11 @@ namespace ScreenerWFP
 {
     public partial class MainForm : Form
     {
+
+        private void GenerateTestData()
+        {
+            
+        }
         private enum TableFormat
         {
             ALL,
@@ -32,6 +37,7 @@ namespace ScreenerWFP
         }
         public MainForm()
         {
+            GenerateTestData();
             InitializeComponent();
             if (!System.Windows.Forms.SystemInformation.TerminalServerSession)
                 //Set Double buffering on the Grid using reflection and the bindingflags enum.
@@ -393,6 +399,10 @@ namespace ScreenerWFP
             //Local function to be added to the ConfirmBtn.
             //Made as a local function so it has access to this functions local variables, making
             //coding a bit cleaner
+            foreach(Control ctrl in AddEntryPanel.Controls)
+            {
+                ctrl.Font = new Font("Arial", 12.0f);
+            }
             void ConfirmBtn_Click(object local_sender, EventArgs local_e)
             {
                 //Putting it here to create less calls
@@ -806,22 +816,35 @@ namespace ScreenerWFP
             List<SearchTerm> st = new List<SearchTerm>();
             if(EntryTypeComboBox.SelectedIndex == 0)
             {
+                //All; no need to filter
             }else if(EntryTypeComboBox.SelectedIndex == 1)
             {
+                //Employees
+                st.Add(new SearchTerm(SearchTerm.Fields.TYPE, "Employee"));
+
 
             }else if(EntryTypeComboBox.SelectedIndex == 2)
             {
-
+                //Essential service providers
+                st.Add(new SearchTerm(SearchTerm.Fields.TYPE, "ESP"));
             }else if(EntryTypeComboBox.SelectedIndex == 3)
             {
-
+                //Essential caregivers
+                st.Add(new SearchTerm(SearchTerm.Fields.TYPE, "EssentialCaregiver"));
             }else if(EntryTypeComboBox.SelectedIndex == 4)
             {
+                //Essential Visitors
+                st.Add(new SearchTerm(SearchTerm.Fields.TYPE, "EssentialVisitor"));
             }
 
             if (ShowCurrentVisitorsChk.Checked)
             {
                 st.Add(new SearchTerm(SearchTerm.Fields.ISACTIVE, ""));
+            }
+
+            if(MainSearchTxt.Text != "")
+            {
+                st.Add(new SearchTerm(SearchTerm.Fields.ANY, MainSearchTxt.Text));
             }
 
 
